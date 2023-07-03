@@ -1,5 +1,5 @@
 let stackPointerMemorySize = 256;
-let randomAccesMemorySize = 65536/16;
+let randomAccesMemorySize = 65536;
 
 let hex = 16;
 
@@ -20,13 +20,17 @@ let stepFrequency = 1;
 
 let update = true;
 
-setInterval(updateScreeRegs, 20); //50hz update interval of screen and regs.
 
-function updateScreeRegs(){
-    
+setInterval(
+    function (){
     if(!update)return;
     update = false;
+    updateScreeRegs()
+},
+20); //50hz update interval of screen and regs.
 
+
+function updateScreeRegs(){
     //Update Screen
     document.getElementById("screen").innerHTML = generateScreen(randomAccesMemory,screenStartIndex,screenSize,screenSize);
     //Update Regs. and memory pointers.
@@ -40,6 +44,7 @@ function updateScreeRegs(){
 
 function generateTables(){
 
+    /*
     randomAccesMemory[0] = 1;
     randomAccesMemory[1] = 6;
     randomAccesMemory[2] = 2;
@@ -47,10 +52,11 @@ function generateTables(){
     randomAccesMemory[4] = 5;
     randomAccesMemory[5] = 6;
     randomAccesMemory[6] = 4;
+    */
 
     setStackPointerMemory(-1,0);
     setRandomAccesMemory(-1,0);
-
+    updateScreeRegs();
 }
 
 
@@ -82,7 +88,7 @@ function updateMemory(id,memory,index,value){
     
     if(index != -1){
         memory[index] = value;
-        if(stepFrequency != 0 && stepFrequency < 100){
+        if(stepFrequency != 0 && stepFrequency <= 1000){
             element.getElementsByClassName("id_"+index)[0].innerHTML = byteAsHex(memory[index],2);
         }
     }else{
@@ -211,16 +217,15 @@ function addToRam(value){
 
 
 
-//Execution
+//Instruction execution
 
 
 //Frequency control
 async function run(freq){
     
     stepFrequency = freq;
-    const startTime = performance.now() * 1000;
     
-    let indexStep = 0;
+    let indexStep = 0; //4 are needed for one instruction
 
     let interval = 1;
     let timesPerInterval = Math.ceil(stepFrequency/1000);
@@ -236,14 +241,15 @@ async function run(freq){
         },
     interval);
 
-    console.log("Elapsed time: " + (performance.now() * 1000 - startTime) + " microseconds");
+
     generateTables();
 }
 
 
 
 
-function step(step){    
+function step(step){ 
+    update = true;
     switch(step) {
         case 0:
             registers[6] = registers[4]; //Kopiraj P v RIN
@@ -251,7 +257,7 @@ function step(step){
             break;
         case 1:
             registers[3] = registers[7];//Kopiraj ROUT v I
-            registers[4] = ++registers[4];//Povečaj P
+            sumReg(4,1,0xffff);//Povečaj P
             break;
         case 2:
             registers[6] = registers[4]; //Kopiraj P v RIN
@@ -259,20 +265,27 @@ function step(step){
         case 3:
             exicuteCommand();//Izvedi komando iz I-ja
     }
-    update = true;
 }
 
+
+function sumReg(index,value,bits){
+    value = registers[index] + value;
+    registers[index] = value & bits;
+    if(value != registers[index]){
+        console.log("Carry enable!!");
+    }
+}
 
 function exicuteCommand(){
 
     switch(registers[3]) {
         case 1:
             registers[0] = randomAccesMemory[registers[6]];//Premakni iz rama v A
-            registers[4] = ++registers[4];//Povečaj P
+            sumReg(4,1,0xffff);//Povečaj P
             break;
         case 2:
             registers[1] = randomAccesMemory[registers[6]];;//Premakni iz rama v B
-            registers[4] = ++registers[4];//Povečaj P
+            sumReg(4,1,0xffff);//Povečaj P
             break;
         case 3:
             setRandomAccesMemory(registers[1],registers[0]);//Kopira A v RAM glede na poiter B-ja
@@ -281,7 +294,7 @@ function exicuteCommand(){
             registers[4] = registers[1];//Kopira B v SP
             break;
         case 5:
-            registers[0] = ++registers[0];//Povečaj A
+            sumReg(0,1,0xff);;//Povečaj A
             break;
         case 6:
             setRandomAccesMemory(registers[0],registers[0]);//Kopira A v RAM glede na poiter A-ja (kr neki)
