@@ -1,5 +1,7 @@
 let stackPointerMemorySize = 256;
-let randomAccesMemorySize = 256;
+let randomAccesMemorySize = 256*256;
+
+let maxMemoryTableHeight = 20;
 
 let hex = 16;
 
@@ -73,9 +75,10 @@ function generateTables(){
     randomAccesMemory[4] = 5;
     randomAccesMemory[5] = 6;
     randomAccesMemory[6] = 4;
-
-    updateMemoryAndReg();
+    
+    
     updateScreeRegs();
+    updateMemoryAndReg(); 
 }
 
 
@@ -104,6 +107,8 @@ function updateMemory(id,memory){
 function generateMemoryTable(memory){
 
     let height = memory.length/tableMemoryWidth;
+    if(height > maxMemoryTableHeight)height = maxMemoryTableHeight;
+
     let gridData = '<tr><td></td>';
 
     for (let j = 0; j < tableMemoryWidth; j++) {
@@ -131,6 +136,7 @@ function generateMemoryTable(memory){
 }
 
 function generateRegisterTable(){
+
 
     let names = '<tr>';
     let values = '<tr>';
@@ -225,7 +231,7 @@ function addToRam(value){
 //Frequency control
 function run(freq){
     
-    stepFrequency = freq;
+    stepFrequency = freq*2;
     
     let indexStep = 0; //4 are needed for one instruction
 
