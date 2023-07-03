@@ -8,23 +8,20 @@ let tableMemoryWidth = 16;
 let stackPointerMemory = new Uint8Array(stackPointerMemorySize);
 let randomAccesMemory = new Uint8Array(randomAccesMemorySize);
 
-let registersSize  = new Array(   1,      1,      1,       1,       2,      2   ); //In bytes
-let registersNames = new Array(  "A",    "B",    "R",    "I",      "P",    "SP" );
-let registers      = new Array(   0,      0,      0,       0,       0,      0   );
+let registersSize  = new Array(   1,      1,      1,      1,      2,      2,      2,      1,     ); //In bytes
+let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT"  );
+let registers      = new Array(   0,      0,      0,      0,      0,      0,      0,      0      );
 
 let screenStartIndex = 0;
 let screenSize = 16;
 
 function generateTables(){
+
     setStackPointerMemory(-1,0);
     setRandomAccesMemory(-1,0);
     updateRegisters(-1,0);
     
-    for (let i = 0; i < randomAccesMemory.length; i++) {
-        randomAccesMemory[i] = i;
-    }
-    
-    
+
     updateScreen(-1);
 }
 
@@ -49,8 +46,9 @@ function updateRegisters(index,value){
 
     if(index!=-1)registers[index] = value;
 
-    updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
     updatePointerToTableMemory("randomAccesMemory", registers[4],"P");
+    updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
+    updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
 
     generateRegisterTable();
 }
@@ -203,27 +201,54 @@ function addToRam(value){
 
 
 //Exicution
+let flip = true;
+
+async function step(){
+    if(flip){
+        updateRegisters(6,registers[4]);
+        await delay(1000);
+        setInstructionReg();
+    }else{
+        updateRegisters(6,registers[4]);
+        await delay(1000);
+        exicuteCommand();
+    }
+
+    updateRegisters(4,++registers[4]);
+
+    
+    flip = !flip;
+}
 
 
-function step(){
-
+function setInstructionReg(){
+    updateRegisters(7,randomAccesMemory[registers[6]]);
+    updateRegisters(3,randomAccesMemory[registers[6]]);
 }
 
 
 
-function exicuteCommand(command){
+function exicuteCommand(){
 
-    switch(command) {
+    switch(registers[7]) {
         case 1:
-            
+            updateRegisters(0,randomAccesMemory[registers[6]])
         case 2:
-            addToRam(2);break;
+            
         case 3:
-            addToRam(3);break;
+            
         default:
 
       }
 
 
 
+}
+
+
+
+function delay(n){
+    return new Promise(function(resolve){
+        setTimeout(resolve,n);
+    });
 }
