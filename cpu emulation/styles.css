@@ -3,6 +3,7 @@ body{
     font-family: monospace;
     background-color: rgb(32, 32, 32);
     font-size: 15px;
+    color: white;
 }
 
 
@@ -10,7 +11,6 @@ body{
 .input{
     width: 100%;
     background-color: black;
-    color: white;
 }
 
 
@@ -79,6 +79,16 @@ body{
 }
 
 
+.flags{
+    width: 140px;
+    text-align: center;
+    background-color: rgb(86, 86, 86);
+    word-spacing: 30px;
+    border: 1px solid rgb(255, 255, 255);
+}
+.flags p{
+    margin: 3px;
+}
 
 
 .screen table{

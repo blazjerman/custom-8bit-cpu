@@ -15,6 +15,11 @@ let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",  
 let registers      = new Array(   0,      0,      0,      0,      0,      0,      0,      0,     0       );
 let registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
 
+
+let flagsNames = new Array(  "C",    "Z",    "H"  );
+let flags      = new Array(   0,      0,      0   );
+
+
 let screenStartIndex = 0;
 let screenSize = 16;
 
@@ -39,7 +44,7 @@ setInterval(
     function (){
     if(!updateMemoryReg)return;
     updateMemoryReg = false;
-    updateMemoryAndReg()
+    updateMemoryRegFlag()
 },
 100); 
 
@@ -49,7 +54,7 @@ function updateScreeRegs(){
 }
 
 
-function updateMemoryAndReg(){
+function updateMemoryRegFlag(){
     //Update memory.
     updateMemory("stackPointerMemory",stackPointerMemory); 
     updateMemory("randomAccesMemory",randomAccesMemory);
@@ -58,7 +63,14 @@ function updateMemoryAndReg(){
     updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
     updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
     generateRegisterTable();
+    //Update flags.
+    let text = "<p>";
+    for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
+    text += "<br>";
+    for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
+    document.getElementById("flags").innerHTML = text + "</p>";
 }
+
 
 
 
@@ -76,9 +88,8 @@ function generateTables(){
     randomAccesMemory[5] = 6;
     randomAccesMemory[6] = 4;
     
-    
     updateScreeRegs();
-    updateMemoryAndReg(); 
+    updateMemoryRegFlag(); 
 }
 
 
@@ -262,7 +273,7 @@ function step(step){
             break;
         case 1:
             registers[3] = registers[7];//Kopiraj ROUT v I
-            sumReg(4,1,0xffff);//Povečaj P
+            operations(4,1,0xffff,false,"SUM");//Povečaj P
             break;
         case 2:
             registers[6] = registers[4]; //Kopiraj P v RIN
@@ -275,24 +286,56 @@ function step(step){
 }
 
 
-function sumReg(index,value,bits){
-    value = registers[index] + value;
-    registers[index] = value & bits;
-    if(value != registers[index]){
-        console.log("Carry enable!!");
+function operations(index,value,bits,cz,operation){
+    switch(operation) {
+    case "SUM":
+        value = registers[index] + value;
+        break;
+    case "NEG":
+        value = registers[index] - value;
+        break;
+    case "SHL":
+        value = registers[index] << 1;
+        break;
+    case "SHR":
+        value = registers[index] >> 1;
+        break;
+    case "AND":
+        value = registers[index] & value;
+        break;
+    case "OR":
+        value = registers[index] | value;
+        break;
+    case "NOT":
+        value = ~registers[index];
+        break;
+    case "XOR":
+        value = registers[index] ^ value;
+        break;
     }
+    registers[index] = value & bits;
+    if(cz)checkFlags(value,index);
 }
+
+
+function checkFlags(value,index){
+    if(value != registers[index])flags[0]=1;
+    else flags[0]=0;
+    if(0 == registers[index])flags[1]=1;
+    else flags[1]=0;
+}
+
 
 function exicuteCommand(){
 
     switch(registers[3]) {
         case 1:
             registers[0] = randomAccesMemory[registers[6]];//Premakni iz rama v A
-            sumReg(4,1,0xffff);//Povečaj P
+            operations(4,1,0xffff,false,"SUM");//Povečaj P
             break;
         case 2:
             registers[1] = randomAccesMemory[registers[6]];;//Premakni iz rama v B
-            sumReg(4,1,0xffff);//Povečaj P
+            operations(4,1,0xffff,false,"SUM");//Povečaj P
             break;
         case 3:
             randomAccesMemory[registers[1]] = registers[0];//Kopira A v RAM glede na poiter B-ja
@@ -301,13 +344,11 @@ function exicuteCommand(){
             registers[4] = registers[1];//Kopira B v SP
             break;
         case 5:
-            sumReg(0,1,0xff);;//Povečaj A
+            operations(0,1,0xff,true,"SUM");//Povečaj P
             break;
         case 6:
             randomAccesMemory[registers[0]] = registers[0];//Kopira A v RAM glede na poiter A-ja (kr neki)
             break;
-
-
       }
 }
 
