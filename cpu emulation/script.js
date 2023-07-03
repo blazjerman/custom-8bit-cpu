@@ -8,28 +8,51 @@ let tableMemoryWidth = 16;
 let stackPointerMemory = new Uint8Array(stackPointerMemorySize);
 let randomAccesMemory = new Uint8Array(randomAccesMemorySize);
 
-let registersSize  = new Array(   1,      1,      1,      1,      2,      2,      2,      1,     ); //In bytes
-let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT"  );
-let registers      = new Array(   0,      0,      0,      0,      0,      0,      0,      0      );
+let registersSize  = new Array(   1,      1,      1,      1,      2,      1,      2,      1,    2        ); //In bytes
+let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT","SPOUT"  );
+let registers      = new Array(   0,      0,      0,      0,      0,      0,      0,      0,     0       );
+let registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
 
 let screenStartIndex = 0;
 let screenSize = 16;
 
+let stepFrequency = 1;
+
+let update = true;
+
+setInterval(updateScreeRegs, 20); //50hz update interval of screen and regs.
+
+function updateScreeRegs(){
+    
+    if(!update)return;
+    update = false;
+
+    //Update Screen
+    document.getElementById("screen").innerHTML = generateScreen(randomAccesMemory,screenStartIndex,screenSize,screenSize);
+    //Update Regs. and memory pointers.
+    updatePointerToTableMemory("randomAccesMemory", registers[4],"P");
+    updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
+    updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
+    generateRegisterTable();
+    
+}
+
+
 function generateTables(){
+
+    randomAccesMemory[0] = 1;
+    randomAccesMemory[1] = 6;
+    randomAccesMemory[2] = 2;
+    randomAccesMemory[3] = 4;
+    randomAccesMemory[4] = 5;
+    randomAccesMemory[5] = 6;
+    randomAccesMemory[6] = 4;
 
     setStackPointerMemory(-1,0);
     setRandomAccesMemory(-1,0);
-    updateRegisters(-1,0);
-    
 
-    updateScreen(-1);
 }
 
-function updateScreen(index){
-    if(index == -1 || ( index >= screenStartIndex && index < (screenStartIndex + screenSize * screenSize) ) ){
-        document.getElementById("screen").innerHTML = generateScreen(randomAccesMemory,screenStartIndex,screenSize,screenSize);
-    }
-}
 
 
 
@@ -39,18 +62,6 @@ function setStackPointerMemory(index,value){
 
 function setRandomAccesMemory(index,value){
     updateMemory("randomAccesMemory",randomAccesMemory,index,value);
-    updateScreen(index);
-}
-
-function updateRegisters(index,value){
-
-    if(index!=-1)registers[index] = value;
-
-    updatePointerToTableMemory("randomAccesMemory", registers[4],"P");
-    updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
-    updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
-
-    generateRegisterTable();
 }
 
 
@@ -71,7 +82,9 @@ function updateMemory(id,memory,index,value){
     
     if(index != -1){
         memory[index] = value;
-        element.getElementsByClassName("id_"+index)[0].innerHTML = byteAsHex(memory[index],2);
+        if(stepFrequency != 0 && stepFrequency < 100){
+            element.getElementsByClassName("id_"+index)[0].innerHTML = byteAsHex(memory[index],2);
+        }
     }else{
         element.innerHTML = generateMemoryTable(memory);
     }
@@ -115,8 +128,9 @@ function generateRegisterTable(){
     let values = '<tr>';
 
     for (let i = 0; i < registers.length; i++) {
-        names += '<td>' + registersNames[i] + '</td>';
-        values += '<td class="' + registersNames[i] + '">' + byteAsHex(registers[i],registersSize[i]*2) + '</td>';
+        let index = registersIdex[i];
+        names += '<td>' + registersNames[index] + '</td>';
+        values += '<td class="' + registersNames[index] + '">' + byteAsHex(registers[index],registersSize[index]*2) + '</td>';
     }
 
     document.getElementById("registers").innerHTML = names + '</tr>' + values + '</tr>';
@@ -197,58 +211,83 @@ function addToRam(value){
 
 
 
+//Execution
 
 
-
-//Exicution
-let flip = true;
-
-async function step(){
-    if(flip){
-        updateRegisters(6,registers[4]);
-        await delay(1000);
-        setInstructionReg();
-    }else{
-        updateRegisters(6,registers[4]);
-        await delay(1000);
-        exicuteCommand();
-    }
-
-    updateRegisters(4,++registers[4]);
-
+//Frequency control
+async function run(freq){
     
-    flip = !flip;
+    stepFrequency = freq;
+    const startTime = performance.now() * 1000;
+    
+    let indexStep = 0;
+
+    let interval = 1;
+    let timesPerInterval = Math.ceil(stepFrequency/1000);
+    
+    if(stepFrequency <= 1000)interval = 1 / stepFrequency * 1000;
+    
+    setInterval(
+        function () {
+            for (let i = 0; i < timesPerInterval; i++) {
+                step(indexStep++);
+                if(indexStep==4)indexStep=0;
+            }
+        },
+    interval);
+
+    console.log("Elapsed time: " + (performance.now() * 1000 - startTime) + " microseconds");
+    generateTables();
 }
 
 
-function setInstructionReg(){
-    updateRegisters(7,randomAccesMemory[registers[6]]);
-    updateRegisters(3,randomAccesMemory[registers[6]]);
-}
 
+
+function step(step){    
+    switch(step) {
+        case 0:
+            registers[6] = registers[4]; //Kopiraj P v RIN
+            registers[7] = randomAccesMemory[registers[6]]; //Pridobi ROUT glede na RIN
+            break;
+        case 1:
+            registers[3] = registers[7];//Kopiraj ROUT v I
+            registers[4] = ++registers[4];//Povečaj P
+            break;
+        case 2:
+            registers[6] = registers[4]; //Kopiraj P v RIN
+            break;
+        case 3:
+            exicuteCommand();//Izvedi komando iz I-ja
+    }
+    update = true;
+}
 
 
 function exicuteCommand(){
 
-    switch(registers[7]) {
+    switch(registers[3]) {
         case 1:
-            updateRegisters(0,randomAccesMemory[registers[6]])
+            registers[0] = randomAccesMemory[registers[6]];//Premakni iz rama v A
+            registers[4] = ++registers[4];//Povečaj P
+            break;
         case 2:
-            
+            registers[1] = randomAccesMemory[registers[6]];;//Premakni iz rama v B
+            registers[4] = ++registers[4];//Povečaj P
+            break;
         case 3:
-            
-        default:
+            setRandomAccesMemory(registers[1],registers[0]);//Kopira A v RAM glede na poiter B-ja
+            break;
+        case 4:
+            registers[4] = registers[1];//Kopira B v SP
+            break;
+        case 5:
+            registers[0] = ++registers[0];//Povečaj A
+            break;
+        case 6:
+            setRandomAccesMemory(registers[0],registers[0]);//Kopira A v RAM glede na poiter A-ja (kr neki)
+            break;
+
 
       }
-
-
-
 }
 
-
-
-function delay(n){
-    return new Promise(function(resolve){
-        setTimeout(resolve,n);
-    });
-}
