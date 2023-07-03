@@ -249,16 +249,12 @@ function run(freq){
         },
     interval);
 
-
-    generateTables();
 }
 
 
 
 
 function step(step){ 
-    updateScreen = true;
-    updateMemoryReg = true;
     switch(step) {
         case 0:
             registers[6] = registers[4]; //Kopiraj P v RIN
@@ -274,6 +270,8 @@ function step(step){
         case 3:
             exicuteCommand();//Izvedi komando iz I-ja
     }
+    updateScreen = true;
+    updateMemoryReg = true;
 }
 
 
