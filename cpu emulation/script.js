@@ -260,24 +260,21 @@ function run(freq){
     stepFrequency = freq*2; //1 cycle needs 2 steps.
     
     let interval = 1;
-    const timesPerInterval = Math.ceil(stepFrequency/1000);
+    const timesPerInterval = Math.ceil(stepFrequency / 1000);
     
     if(stepFrequency <= 1000)interval = 1 / stepFrequency * 1000;
     
     running = setInterval(
         function () {
-            for (let i = 0; i < timesPerInterval; i++) {
-                step(indexStep++);
-                if(indexStep==4)indexStep=0;
-            }
+            for (let i = 0; i < timesPerInterval; i++)step();
         },
     interval);
 
 }
 
 
-function step(step){ 
-    switch(step) {
+function step(){ 
+    switch(indexStep) {
         case 0:
             WRITEP();  //Copy P in RIN
             READR();   //Get ROUT from RIN
@@ -293,8 +290,12 @@ function step(step){
         case 3:
             exicuteCommand();   //Execute instruction from I (exicuteCommand will Increase P if its needed.)
     }
+
     updateScreen = true;
     updateMemoryReg = true;
+    
+    indexStep++;
+    if(indexStep==4)indexStep=0;
 }
 
 
