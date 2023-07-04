@@ -1,33 +1,36 @@
-let stackPointerMemorySize = 256;
-let randomAccesMemorySize = 256*256;
 
-let maxMemoryTableHeight = 20;
 
-let hex = 16;
+let SPMSize = 256;       //Divisor of maxMemoryTableHeight (max: 256)
+let RAMSize = 65536;    //Divisor of maxMemoryTableHeight (max: 65536)
 
 let tableMemoryWidth = 16;
-
-let stackPointerMemory = new Uint8Array(stackPointerMemorySize);
-let randomAccesMemory = new Uint8Array(randomAccesMemorySize);
-
-let registersSize  = new Array(   1,      1,      1,      1,      2,      1,      2,      1,    2        ); //In bytes
-let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT","SPOUT"  );
-let registers      = new Array(   0,      0,      0,      0,      0,      0,      0,      0,     0       );
-let registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
-
-
-let flagsNames = new Array(  "C",    "Z",    "H"  );
-let flags      = new Array(   0,      0,      0   );
-
+let maxTableMemoryHeight = 20;
 
 let screenStartIndex = 0;
 let screenSize = 16;
 
 let stepFrequency = 1;
 
+let hex = 16;
+
+//Memory
+let SPM = new Uint8Array(SPMSize);
+let RAM = new Uint8Array(RAMSize);
+
+//Registers
+let registersSize  = new Array(   1,      1,      1,      1,      2,      1,      2,      1,    2        ); //In bytes
+let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT","SPOUT"  );
+let registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
+let registers      = new Uint16Array(registersNames.length);
+
+//Flags
+let flagsNames = new Array(  "C",    "Z",    "H"  );
+let flags      = new Uint8Array(flagsNames.length);
+
+
+//HTML updates.
 let updateScreen = true;
 let updateMemoryReg = true;
-
 
 //50hz update interval of screen.
 setInterval(
@@ -48,45 +51,40 @@ setInterval(
 },
 100); 
 
+
 function updateScreeRegs(){
     //Update Screen
-    document.getElementById("screen").innerHTML = generateScreen(randomAccesMemory,screenStartIndex,screenSize,screenSize);   
+    generateScreen("screen",RAM,screenStartIndex,screenSize,screenSize);   
 }
-
 
 function updateMemoryRegFlag(){
     //Update memory.
-    updateMemory("stackPointerMemory",stackPointerMemory); 
-    updateMemory("randomAccesMemory",randomAccesMemory);
+    generateMemoryTable("stackPointerMemory",SPM); 
+    generateMemoryTable("randomAccesMemory",RAM);
     //Update Regs. and memory pointers.
+    generateRegisterTable("registers");
     updatePointerToTableMemory("randomAccesMemory", registers[4],"P");
     updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
     updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
-    generateRegisterTable();
     //Update flags.
-    let text = "<p>";
-    for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
-    text += "<br>";
-    for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
-    document.getElementById("flags").innerHTML = text + "</p>";
+    generateFlagTable("flags");
 }
 
 
 
 
 
-
-
+//First run.
 function generateTables(){
 
     
-    randomAccesMemory[0] = 1;
-    randomAccesMemory[1] = 6;
-    randomAccesMemory[2] = 2;
-    randomAccesMemory[3] = 4;
-    randomAccesMemory[4] = 5;
-    randomAccesMemory[5] = 6;
-    randomAccesMemory[6] = 4;
+    RAM[0] = 1;
+    RAM[1] = 6;
+    RAM[2] = 2;
+    RAM[3] = 4;
+    RAM[4] = 5;
+    RAM[5] = 6;
+    RAM[6] = 4;
     
     updateScreeRegs();
     updateMemoryRegFlag(); 
@@ -107,18 +105,11 @@ function updatePointerToTableMemory(id, index, cl){
 }
 
 
-
-function updateMemory(id,memory){
-    let element = document.getElementById(id);
-    element.innerHTML = generateMemoryTable(memory);
-}
-
-
 //Table generation
-function generateMemoryTable(memory){
+function generateMemoryTable(id,memory){
 
     let height = memory.length/tableMemoryWidth;
-    if(height > maxMemoryTableHeight)height = maxMemoryTableHeight;
+    if(height > maxTableMemoryHeight)height = maxTableMemoryHeight;
 
     let gridData = '<tr><td></td>';
 
@@ -133,33 +124,39 @@ function generateMemoryTable(memory){
         gridData += '<tr><td>' + byteAsHex(i,getBaseLog(hex, height)) + '</td>';
         
         for (let j = 0; j < tableMemoryWidth; j++) {
-            
-            if((i * tableMemoryWidth + j) >= memory.length)break;
             gridData += '<td class="id_' + (i * tableMemoryWidth + j) + '">' + byteAsHex(memory[(i * tableMemoryWidth + j)],2) + '</td>';
-
         }
 
         gridData += '</tr>';
 
     }
 
-    return gridData;
+    document.getElementById(id).innerHTML = gridData;
 }
 
-function generateRegisterTable(){
-
+function generateRegisterTable(id){
 
     let names = '<tr>';
     let values = '<tr>';
 
     for (let i = 0; i < registers.length; i++) {
+        
         let index = registersIdex[i];
         names += '<td>' + registersNames[index] + '</td>';
         values += '<td class="' + registersNames[index] + '">' + byteAsHex(registers[index],registersSize[index]*2) + '</td>';
     }
 
-    document.getElementById("registers").innerHTML = names + '</tr>' + values + '</tr>';
+    document.getElementById(id).innerHTML = names + '</tr>' + values + '</tr>';
 }
+
+function generateFlagTable(id){
+    let text = "<p>";
+    for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
+    text += "<br>";
+    for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
+    document.getElementById(id).innerHTML = text + "</p>";
+}
+
 
 function byteAsHex(byte,size){
     return byte.toString(hex).padStart(size, '0').toUpperCase();
@@ -172,7 +169,7 @@ function getBaseLog(x, y) {
 
 //Screen
 
-function generateScreen(memory,start,x,y){
+function generateScreen(id,memory,start,x,y){
 
     let gridData = '';
 
@@ -193,7 +190,7 @@ function generateScreen(memory,start,x,y){
 
     }
 
-    return gridData;
+    document.getElementById(id).innerHTML = gridData;
 }
 
 function get32ColorFrom8(color){
@@ -202,6 +199,15 @@ function get32ColorFrom8(color){
     let b = Math.round(((color&3)/3)*255);
     return "rgb("+ r + ", " + g + ", " + b + ")"
 }
+
+
+
+
+
+
+
+
+
 
 
 //Commands
@@ -225,8 +231,8 @@ function command(name){
 
 
 function addToRam(value){
-    for (let i = 0; i < randomAccesMemory.length; i++) {
-        if(randomAccesMemory[i] == 0){
+    for (let i = 0; i < RAM.length; i++) {
+        if(RAM[i] == 0){
             setRandomAccesMemory(i,value);
             break;
         }
@@ -236,22 +242,30 @@ function addToRam(value){
 
 
 
+
+
+
+
+
+
 //Instruction execution
 
 
 //Frequency control
+
+let indexStep = 0; //4 are needed for one instruction (two cycles)
+let running;
+
 function run(freq){
     
-    stepFrequency = freq*2;
+    stepFrequency = freq*2; //1 cycle needs 2 steps.
     
-    let indexStep = 0; //4 are needed for one instruction
-
     let interval = 1;
     let timesPerInterval = Math.ceil(stepFrequency/1000);
     
     if(stepFrequency <= 1000)interval = 1 / stepFrequency * 1000;
     
-    setInterval(
+    running = setInterval(
         function () {
             for (let i = 0; i < timesPerInterval; i++) {
                 step(indexStep++);
@@ -265,25 +279,28 @@ function run(freq){
 
 
 
+
+
 function step(step){ 
     switch(step) {
         case 0:
-            registers[6] = registers[4]; //Kopiraj P v RIN
-            registers[7] = randomAccesMemory[registers[6]]; //Pridobi ROUT glede na RIN
+            registers[6] = registers[4];                        //Copy P in RIN
+            registers[7] = RAM[registers[6]];                   //Get ROUT from RIN
             break;
         case 1:
-            registers[3] = registers[7];//Kopiraj ROUT v I
-            operations(4,1,0xffff,false,"SUM");//Povečaj P
+            registers[3] = registers[7];                        //Copy ROUT in I
+            registers[4]++;                                     //Increase P
             break;
         case 2:
-            registers[6] = registers[4]; //Kopiraj P v RIN
+            registers[6] = registers[4];                        //Copy P in RIN
             break;
         case 3:
-            exicuteCommand();//Izvedi komando iz I-ja
+            exicuteCommand();                                   //Execute instruction from I (exicuteCommand will Increase P if its needed.)
     }
     updateScreen = true;
     updateMemoryReg = true;
 }
+
 
 
 function operations(index,value,bits,cz,operation){
@@ -330,24 +347,24 @@ function exicuteCommand(){
 
     switch(registers[3]) {
         case 1:
-            registers[0] = randomAccesMemory[registers[6]];//Premakni iz rama v A
-            operations(4,1,0xffff,false,"SUM");//Povečaj P
+            registers[0] = RAM[registers[6]];//Premakni iz rama v A
+            registers[4]++;//Povečaj P
             break;
         case 2:
-            registers[1] = randomAccesMemory[registers[6]];;//Premakni iz rama v B
-            operations(4,1,0xffff,false,"SUM");//Povečaj P
+            registers[1] = RAM[registers[6]];;//Premakni iz rama v B
+            registers[4]++;//Povečaj P
             break;
         case 3:
-            randomAccesMemory[registers[1]] = registers[0];//Kopira A v RAM glede na poiter B-ja
+            RAM[registers[1]] = registers[0];//Kopira A v RAM glede na poiter B-ja
             break;
         case 4:
             registers[4] = registers[1];//Kopira B v SP
             break;
         case 5:
-            operations(0,1,0xff,true,"SUM");//Povečaj P
+            operations(0,1,0xff,true,"SUM");//Povečaj A
             break;
         case 6:
-            randomAccesMemory[registers[0]] = registers[0];//Kopira A v RAM glede na poiter A-ja (kr neki)
+            RAM[registers[0]] = registers[0];//Kopira A v RAM glede na poiter A-ja (kr neki)
             break;
       }
 }
