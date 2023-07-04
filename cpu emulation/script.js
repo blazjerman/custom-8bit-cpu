@@ -1,5 +1,3 @@
-
-
 let SPMSize = 256;       //Divisor of maxMemoryTableHeight (max: 256)
 let RAMSize = 65536;    //Divisor of maxMemoryTableHeight (max: 65536)
 
@@ -11,21 +9,21 @@ let screenSize = 16;
 
 let stepFrequency = 1;
 
-let hex = 16;
+const hex = 16;
 
 //Memory
-let SPM = new Uint8Array(SPMSize);
-let RAM = new Uint8Array(RAMSize);
+const SPM = new Uint8Array(SPMSize);
+const RAM = new Uint8Array(RAMSize);
 
 //Registers
-let registersSize  = new Array(   1,      1,      1,      1,      2,      1,      2,      1,    2        ); //In bytes
-let registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT","SPOUT"  );
-let registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
-let registers      = new Uint16Array(registersNames.length);
+const registersSize  = new Array(   1,      1,      1,      1,      2,      1,      2,      1,    2        ); //In bytes
+const registersNames = new Array(  "A",    "B",    "R",    "I",    "P",    "SP",   "RIN",  "ROUT","SPOUT"  );
+const registersIdex  = new Array(   0,      1,      2,      3,      5,      4,      6,      8,     7       );
+const registers      = new Uint16Array(registersNames.length);
 
 //Flags
-let flagsNames = new Array(  "C",    "Z",    "H"  );
-let flags      = new Uint8Array(flagsNames.length);
+const flagsNames = new Array(  "C",    "Z",    "H"  );
+const flags      = new Uint8Array(flagsNames.length);
 
 
 //HTML updates.
@@ -35,20 +33,20 @@ let updateMemoryReg = true;
 //50hz update interval of screen.
 setInterval(
     function (){
-    if(!updateScreen)return;
-    updateScreen = false;
-    updateScreeRegs()
-},
+        //if(!updateScreen)return;
+        updateScreen = false;
+        updateScreeRegs()
+    },
 20); 
 
 
 //10hz update interval of memory and regs.
 setInterval(
     function (){
-    if(!updateMemoryReg)return;
-    updateMemoryReg = false;
-    updateMemoryRegFlag()
-},
+        //if(!updateMemoryReg)return;
+        updateMemoryReg = false;
+        updateMemoryRegFlag()
+    },
 100); 
 
 
@@ -76,7 +74,8 @@ function updateMemoryRegFlag(){
 
 //First run.
 function generateTables(){
-
+    SPM[0] = 1;
+    SPM[1] = 6;
     
     RAM[0] = 1;
     RAM[1] = 6;
@@ -93,7 +92,7 @@ function generateTables(){
 
 
 function updatePointerToTableMemory(id, index, cl){
-    let element = document.getElementById(id);
+    const element = document.getElementById(id);
 
     if(element.getElementsByClassName(cl).length!=0){
         element.getElementsByClassName(cl)[0].classList.remove(cl);
@@ -111,27 +110,27 @@ function generateMemoryTable(id,memory){
     let height = memory.length/tableMemoryWidth;
     if(height > maxTableMemoryHeight)height = maxTableMemoryHeight;
 
-    let gridData = '<tr><td></td>';
+    let text = '<tr><td></td>';
 
     for (let j = 0; j < tableMemoryWidth; j++) {
-        gridData += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
+        text += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
     }
     
-    gridData += '</tr>';
+    text += '</tr>';
 
     for (let i = 0; i < height; i++) {
       
-        gridData += '<tr><td>' + byteAsHex(i,getBaseLog(hex, height)) + '</td>';
+        text += '<tr><td>' + byteAsHex(i,getBaseLog(hex, height)) + '</td>';
         
         for (let j = 0; j < tableMemoryWidth; j++) {
-            gridData += '<td class="id_' + (i * tableMemoryWidth + j) + '">' + byteAsHex(memory[(i * tableMemoryWidth + j)],2) + '</td>';
+            text += '<td class="id_' + (i * tableMemoryWidth + j) + '">' + byteAsHex(memory[(i * tableMemoryWidth + j)],2) + '</td>';
         }
 
-        gridData += '</tr>';
+        text += '</tr>';
 
     }
 
-    document.getElementById(id).innerHTML = gridData;
+    document.getElementById(id).innerHTML = text;
 }
 
 function generateRegisterTable(id){
@@ -171,32 +170,32 @@ function getBaseLog(x, y) {
 
 function generateScreen(id,memory,start,x,y){
 
-    let gridData = '';
+    let text = "";
 
     let index = start;
 
     for (let i = 0; i < x; i++) {
       
-        gridData += '<tr>';
+        text += '<tr>';
         
         for (let j = 0; j < y; j++) {
 
-            gridData += '<td class="id_' + index + '" style="background-color: ' + get32ColorFrom8(memory[index]) + '"></td>';
+            text += '<td class="id_' + index + '" style="background-color: ' + get32ColorFrom8(memory[index]) + '"></td>';
             index++;
 
         }
 
-        gridData += '</tr>';
+        text += '</tr>';
 
     }
 
-    document.getElementById(id).innerHTML = gridData;
+    document.getElementById(id).innerHTML = text;
 }
 
 function get32ColorFrom8(color){
-    let r = Math.round(((color>>5)/7)*255);
-    let g = Math.round((((color>>2)&7)/7)*255);
-    let b = Math.round(((color&3)/3)*255);
+    const r = Math.round(((color>>5)/7)*255);
+    const g = Math.round((((color>>2)&7)/7)*255);
+    const b = Math.round(((color&3)/3)*255);
     return "rgb("+ r + ", " + g + ", " + b + ")"
 }
 
@@ -261,7 +260,7 @@ function run(freq){
     stepFrequency = freq*2; //1 cycle needs 2 steps.
     
     let interval = 1;
-    let timesPerInterval = Math.ceil(stepFrequency/1000);
+    const timesPerInterval = Math.ceil(stepFrequency/1000);
     
     if(stepFrequency <= 1000)interval = 1 / stepFrequency * 1000;
     
@@ -277,69 +276,25 @@ function run(freq){
 }
 
 
-
-
-
-
 function step(step){ 
     switch(step) {
         case 0:
-            registers[6] = registers[4];                        //Copy P in RIN
-            registers[7] = RAM[registers[6]];                   //Get ROUT from RIN
+            WRITEP();  //Copy P in RIN
+            READR();   //Get ROUT from RIN
             break;
         case 1:
-            registers[3] = registers[7];                        //Copy ROUT in I
-            registers[4]++;                                     //Increase P
+            READI();   //Copy ROUT in I
+            INCP();    //Increase P
             break;
         case 2:
-            registers[6] = registers[4];                        //Copy P in RIN
+            WRITEP();  //Copy P in RIN
+            READR();   //Get ROUT from RIN
             break;
         case 3:
-            exicuteCommand();                                   //Execute instruction from I (exicuteCommand will Increase P if its needed.)
+            exicuteCommand();   //Execute instruction from I (exicuteCommand will Increase P if its needed.)
     }
     updateScreen = true;
     updateMemoryReg = true;
-}
-
-
-
-function operations(index,value,bits,cz,operation){
-    switch(operation) {
-    case "SUM":
-        value = registers[index] + value;
-        break;
-    case "NEG":
-        value = registers[index] - value;
-        break;
-    case "SHL":
-        value = registers[index] << 1;
-        break;
-    case "SHR":
-        value = registers[index] >> 1;
-        break;
-    case "AND":
-        value = registers[index] & value;
-        break;
-    case "OR":
-        value = registers[index] | value;
-        break;
-    case "NOT":
-        value = ~registers[index];
-        break;
-    case "XOR":
-        value = registers[index] ^ value;
-        break;
-    }
-    registers[index] = value & bits;
-    if(cz)checkFlags(value,index);
-}
-
-
-function checkFlags(value,index){
-    if(value != registers[index])flags[0]=1;
-    else flags[0]=0;
-    if(0 == registers[index])flags[1]=1;
-    else flags[1]=0;
 }
 
 
@@ -347,25 +302,85 @@ function exicuteCommand(){
 
     switch(registers[3]) {
         case 1:
-            registers[0] = RAM[registers[6]];//Premakni iz rama v A
-            registers[4]++;//Povečaj P
+            READ(0);//Premakni iz rama v A
+            INCP();//Povečaj P
             break;
         case 2:
-            registers[1] = RAM[registers[6]];;//Premakni iz rama v B
-            registers[4]++;//Povečaj P
+            READ(1);//Premakni iz rama v B
+            INCP();//Povečaj P
             break;
         case 3:
             RAM[registers[1]] = registers[0];//Kopira A v RAM glede na poiter B-ja
             break;
         case 4:
-            registers[4] = registers[1];//Kopira B v SP
+            registers[4] = registers[1];//Kopira B v P
             break;
         case 5:
-            operations(0,1,0xff,true,"SUM");//Povečaj A
+            INC(0);//Povečaj A
             break;
         case 6:
             RAM[registers[0]] = registers[0];//Kopira A v RAM glede na poiter A-ja (kr neki)
             break;
       }
 }
+function exicuteCommandTest(value){
+    switch(value) {
+        
+              case 2:MOV(0,1);
+        break;case 3:SUM(0,1);
+        break;case 4:SUB(0,1);
+        break;case 5:SHL(0);
+        break;case 6:SHR(0);
+        break;case 7:AND(0,1);
+        break;case 8:OR(0,1);
+        break;case 9:XOR(0,1);
+        break;case 10:NOT(0);
+        break;case 11:INC(0);
+        break;case 12:DEC(0);
+        break;case 13:INCP();
+        break;case 14:READR();
+        break;case 15:WRITEP();
+        break;case 16:READI();
+        break;case 17:READ(0);
+        break;case 18:POP(0);
+        break;case 19:PUSH(0);
+        break;case 20:POPR();
+        break;case 21:PUSHP();
+        break;case 22:JIC();
+        break;case 23:JIZ();
+        break;case 24:JICZ();
+        break;case 25:JINC();
+        break;case 26:JINZ();
+        break;case 27:JINCZ();
+    }
+}
 
+
+/*
+MOV(0,1
+SUM(0,1
+SUB();b
+SHL();b
+SHR();b
+AND();b
+OR();br
+XOR();b
+NOT();b
+INC();b
+DEC();b
+INCP();
+READR()
+WRITEP(
+READI()
+READ();
+POP();b
+PUSH();
+POPR();
+PUSHP()
+JIC();b
+JIZ();b
+JICZ();
+JINC();
+JINZ();
+JINCZ()
+*/
