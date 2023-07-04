@@ -3,29 +3,33 @@
 <head>
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="script.js"></script>
-    <script src="alu.js"></script>
 </head>
 <body>
 
+    <div class="panel">
 
-    <div class="main_container">
+    </div>
+
+    <div class="mainContainer">
         
         <div class="section">
-            <div>
-                <input class="input" type="text" id="name" name="name">
+            <div class="codeEditor">
+                <div class="lines"></div>
+                <textarea id="code" class="code" wrap="off"></textarea>
             </div>
         </div>
         
         <div class="section">
             <div class="memory">
                 <table>
-                    <tbody id="stackPointerMemory"></tbody>
+                    <tbody id="SPM"></tbody>
+                    <caption>Stack pointer memory</caption>
                 </table>
             </div>
             <div class="memory">
                 <table>
-                    <tbody id="randomAccesMemory"></tbody>
+                    <tbody id="RAM"></tbody>
+                    <caption>Random acces memory</caption>
                 </table>
             </div>
         </div>
@@ -49,9 +53,11 @@
 
 
 
-    <script>
-        generateTables();
-    </script>
+    
+    <script src="script.js"></script>
+    <script src="alu.js"></script>
+    <script src="editor.js"></script>
+    <script>generateTables();</script>
 
 </body>
 </html>

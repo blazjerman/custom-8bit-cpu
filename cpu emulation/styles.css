@@ -1,33 +1,63 @@
+*{
+    margin: 0px;
+    font-family: monospace;
+    font-size: 16px;
+}
+
 
 body{
-    font-family: monospace;
     background-color: rgb(32, 32, 32);
-    font-size: 15px;
-    color: white;
+    color: rgb(24, 24, 24);
 }
 
 
-
-.input{
-    width: 100%;
-    background-color: black;
+.panel{
+    background-color: #2d2d2d;
+    height: 4vh;
+    text-align: center;
 }
 
 
-
-.main_container {
+.mainContainer {
     display: flex;
 }
-.main_container .section {
+.mainContainer .section {
     flex: 1;
-    margin: 10px;
+    height: 96vh;
+    overflow: auto;
 }
-.main_container .section div {
+
+
+.codeEditor{
+    display: flex;
+    min-height: 96vh;
+}
+.lines{
+    width: 20px;
+    background-color: rgb(207, 207, 207);
+    padding: 10px;
+    text-align: right;
+    user-select: none;
+}
+.code{
+    background-color: rgb(24, 24, 24);
+    color: rgb(207, 207, 207);
+    flex-grow: 1;
+    padding: 10px;
+    resize: none;
+    border: none;
+    outline: none;
+}
+
+
+.memory{
+    float: right;
     margin: auto;
-    margin-bottom: 30px;
 }
-
-
+.memory caption{
+    background-color: rgb(207, 207, 207);
+    color: black;
+}
 
 
 .memory table{
@@ -35,9 +65,10 @@ body{
     border-collapse: collapse;
 }
 .memory td {
-    border: 1px solid rgb(255, 255, 255);
-    padding: 5px;
-    width: 23px;
+    border: 1px solid rgb(207, 207, 207);
+    padding: 4px;
+    width: 1vh;
+    height: 1vh;
     text-align: center;
 }
 .memory tr:first-child{
@@ -46,15 +77,13 @@ body{
 .memory td:first-child {
     background-color: rgb(42, 42, 42);
     text-align: left;
-    width: 30px;
+    width: 3vh;
 }
-
-
-
 
 
 .registers{
     width: 70%;
+    margin: auto;
 }
 .registers table{
     color: rgb(148, 148, 148);
@@ -85,12 +114,17 @@ body{
     background-color: rgb(86, 86, 86);
     word-spacing: 30px;
     border: 1px solid rgb(255, 255, 255);
-}
-.flags p{
-    margin: 3px;
+    margin: auto;
 }
 
 
+.screen{
+    width: 50%;
+    position: relative;
+    padding-top: 50%;
+    overflow: hidden;
+    margin: auto;
+}
 .screen table{
     position: absolute;
     top: 0;
@@ -98,12 +132,6 @@ body{
     width: 100%;
     height: 100%;
     border-collapse: collapse;
-}
-.screen{
-    width: 50%;
-    position: relative;
-    padding-top: 50%;
-    overflow: hidden;
 }
 .screen td {
     padding: 0px;

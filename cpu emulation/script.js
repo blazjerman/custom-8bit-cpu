@@ -25,6 +25,12 @@ const registers      = new Uint16Array(registersNames.length);
 const flagsNames = new Array(  "C",    "Z",    "H"  );
 const flags      = new Uint8Array(flagsNames.length);
 
+//HTML
+const elementSPM = document.getElementById("SPM");
+const elementRAM = document.getElementById("RAM");
+const elementScreen = document.getElementById("screen");
+const elementRegister = document.getElementById("registers");
+const elementFlags = document.getElementById("flags");
 
 //HTML updates.
 let updateScreen = true;
@@ -52,20 +58,20 @@ setInterval(
 
 function updateScreeRegs(){
     //Update Screen
-    generateScreen("screen",RAM,screenStartIndex,screenSize,screenSize);   
+    generateScreen(elementScreen,RAM,screenStartIndex,screenSize,screenSize);   
 }
 
 function updateMemoryRegFlag(){
     //Update memory.
-    generateMemoryTable("stackPointerMemory",SPM); 
-    generateMemoryTable("randomAccesMemory",RAM);
+    generateMemoryTable(elementSPM,SPM); 
+    generateMemoryTable(elementRAM,RAM);
     //Update Regs. and memory pointers.
-    generateRegisterTable("registers");
-    updatePointerToTableMemory("randomAccesMemory", registers[4],"P");
-    updatePointerToTableMemory("stackPointerMemory", registers[5],"SP");
-    updatePointerToTableMemory("randomAccesMemory", registers[6],"RIN");
+    generateRegisterTable(elementRegister);
+    updatePointerToTableMemory(elementRAM, registers[4],"P");
+    updatePointerToTableMemory(elementSPM, registers[5],"SP");
+    updatePointerToTableMemory(elementRAM, registers[6],"RIN");
     //Update flags.
-    generateFlagTable("flags");
+    generateFlagTable(elementFlags);
 }
 
 
@@ -91,8 +97,7 @@ function generateTables(){
 
 
 
-function updatePointerToTableMemory(id, index, cl){
-    const element = document.getElementById(id);
+function updatePointerToTableMemory(element, index, cl){
 
     if(element.getElementsByClassName(cl).length!=0){
         element.getElementsByClassName(cl)[0].classList.remove(cl);
@@ -101,19 +106,18 @@ function updatePointerToTableMemory(id, index, cl){
     if(element.getElementsByClassName("id_"+index).length!=0){
         element.getElementsByClassName("id_"+index)[0].classList.add(cl);
     }
+
 }
 
 
 //Table generation
-function generateMemoryTable(id,memory){
+function generateMemoryTable(element,memory){
 
     const height = Math.min(memory.length / tableMemoryWidth, maxTableMemoryHeight);
 
     let text = '<tr><td></td>';
 
-    for (let j = 0; j < tableMemoryWidth; j++) {
-        text += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
-    }
+    for (let j = 0; j < tableMemoryWidth; j++)text += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
     
     text += '</tr>';
 
@@ -129,10 +133,10 @@ function generateMemoryTable(id,memory){
 
     }
 
-    document.getElementById(id).innerHTML = text;
+    element.innerHTML = text;
 }
 
-function generateRegisterTable(id){
+function generateRegisterTable(element){
 
     let names = '<tr>';
     let values = '<tr>';
@@ -144,15 +148,15 @@ function generateRegisterTable(id){
         values += '<td class="' + registersNames[index] + '">' + byteAsHex(registers[index],registersSize[index]*2) + '</td>';
     }
 
-    document.getElementById(id).innerHTML = names + '</tr>' + values + '</tr>';
+    element.innerHTML = names + '</tr>' + values + '</tr>';
 }
 
-function generateFlagTable(id){
+function generateFlagTable(element){
     let text = "";
     for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
     text += "<br>";
     for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
-    document.getElementById(id).innerHTML = text;
+    element.innerHTML = text;
 }
 
 
@@ -166,7 +170,7 @@ function getBaseLog(x, y) {
 
 //Screen
 
-function generateScreen(id,memory,start,x,y){
+function generateScreen(element,memory,start,x,y){
 
     let text = "";
 
@@ -187,7 +191,7 @@ function generateScreen(id,memory,start,x,y){
 
     }
 
-    document.getElementById(id).innerHTML = text;
+    element.innerHTML = text;
 }
 
 function get32ColorFrom8(color){
