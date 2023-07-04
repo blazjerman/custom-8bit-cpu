@@ -33,7 +33,7 @@ let updateMemoryReg = true;
 //50hz update interval of screen.
 setInterval(
     function (){
-        //if(!updateScreen)return;
+        if(!updateScreen)return;
         updateScreen = false;
         updateScreeRegs()
     },
@@ -43,7 +43,7 @@ setInterval(
 //10hz update interval of memory and regs.
 setInterval(
     function (){
-        //if(!updateMemoryReg)return;
+        if(!updateMemoryReg)return;
         updateMemoryReg = false;
         updateMemoryRegFlag()
     },
@@ -107,8 +107,7 @@ function updatePointerToTableMemory(id, index, cl){
 //Table generation
 function generateMemoryTable(id,memory){
 
-    let height = memory.length/tableMemoryWidth;
-    if(height > maxTableMemoryHeight)height = maxTableMemoryHeight;
+    const height = Math.min(memory.length / tableMemoryWidth, maxTableMemoryHeight);
 
     let text = '<tr><td></td>';
 
@@ -149,11 +148,11 @@ function generateRegisterTable(id){
 }
 
 function generateFlagTable(id){
-    let text = "<p>";
+    let text = "";
     for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
     text += "<br>";
     for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
-    document.getElementById(id).innerHTML = text + "</p>";
+    document.getElementById(id).innerHTML = text;
 }
 
 
@@ -162,9 +161,8 @@ function byteAsHex(byte,size){
 }
 
 function getBaseLog(x, y) {
-    return Math.log(y) / Math.log(x);
-}
-
+    return Math.log(y) ** (1 / x);
+  }
 
 //Screen
 
@@ -259,10 +257,8 @@ function run(freq){
     
     stepFrequency = freq*2; //1 cycle needs 2 steps.
     
-    let interval = 1;
     const timesPerInterval = Math.ceil(stepFrequency / 1000);
-    
-    if(stepFrequency <= 1000)interval = 1 / stepFrequency * 1000;
+    const interval = stepFrequency <= 1000? 1 / stepFrequency * 1000 : 1;
     
     running = setInterval(
         function () {
@@ -324,6 +320,7 @@ function exicuteCommand(){
             break;
       }
 }
+
 function exicuteCommandTest(value){
     switch(value) {
         
