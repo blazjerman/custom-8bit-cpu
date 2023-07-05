@@ -2,26 +2,41 @@
     margin: 0px;
     font-family: monospace;
     font-size: 16px;
+    color: rgb(207, 207, 207);
 }
 
 
 body{
     background-color: rgb(32, 32, 32);
-    color: rgb(24, 24, 24);
 }
 
 
 .panel{
-    background-color: #2d2d2d;
+    background-color: rgb(55, 55, 55);
     height: 4vh;
-    text-align: center;
+}
+.panel *{
+    float: left;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: rgb(55, 55, 55);
+}
+.x{
+    width: 100px;
+    height: 100px;
+}
+
+.select:hover{
+    background-color: rgb(207, 207, 207);
+    color: rgb(55, 55, 55);
 }
 
 
-.mainContainer {
+.mainContainer{
     display: flex;
 }
-.mainContainer .section {
+.mainContainer .section{
     flex: 1;
     height: 96vh;
     overflow: auto;
@@ -35,11 +50,12 @@ body{
 .lines{
     width: 20px;
     background-color: rgb(207, 207, 207);
+    color: rgb(55, 55, 55);
     padding: 10px;
     text-align: right;
     user-select: none;
 }
-.code{
+#code{
     background-color: rgb(24, 24, 24);
     color: rgb(207, 207, 207);
     flex-grow: 1;
@@ -108,7 +124,7 @@ body{
 }
 
 
-.flags{
+#flags{
     width: 140px;
     text-align: center;
     background-color: rgb(86, 86, 86);

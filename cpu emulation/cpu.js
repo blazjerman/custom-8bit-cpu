@@ -257,23 +257,20 @@ function addToRam(value){
 let indexStep = 0; //4 are needed for one instruction (two cycles)
 let running;
 
-function run(freq){
-    
-    stepFrequency = freq*2; //1 cycle needs 2 steps.
-    
+function run(){
+        
     const timesPerInterval = Math.ceil(stepFrequency / 1000);
     const interval = stepFrequency <= 1000? 1 / stepFrequency * 1000 : 1;
     
     running = setInterval(
         function () {
-            for (let i = 0; i < timesPerInterval; i++)step();
+            for (let i = 0; i < timesPerInterval; i++)singleStep();
         },
     interval);
-
 }
 
 
-function step(){ 
+function singleStep(){ 
     switch(indexStep) {
         case 0:
             WRITEP();  //Copy P in RIN

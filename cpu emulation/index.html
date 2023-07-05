@@ -7,7 +7,11 @@
 <body>
 
     <div class="panel">
-
+        <button>Speed: </button>
+        <select id="frequency" class="select dropDown" name="Frequency" onchange="setFrequency()"></select> 
+        <button id="assemble" onclick="assemble()" class="select">Assemble</button>
+        <button id="step" onclick="step()" class="select">Step</button>
+        <button id="start" onclick="start()" class="select">Start</button>
     </div>
 
     <div class="mainContainer">
@@ -15,7 +19,7 @@
         <div class="section">
             <div class="codeEditor">
                 <div class="lines"></div>
-                <textarea id="code" class="code" wrap="off"></textarea>
+                <textarea id="code" wrap="off"></textarea>
             </div>
         </div>
         
@@ -45,7 +49,7 @@
                     <tbody id="registers"></tbody>
                 </table>
             </div>
-            <div class="flags" id="flags">
+            <div id="flags">
             </div>
         </div>
 
@@ -54,9 +58,10 @@
 
 
     
-    <script src="script.js"></script>
+    <script src="cpu.js"></script>
     <script src="alu.js"></script>
     <script src="editor.js"></script>
+    <script src="controls.js"></script>
     <script>generateTables();</script>
 
 </body>
