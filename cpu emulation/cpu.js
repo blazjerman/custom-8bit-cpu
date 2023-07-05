@@ -117,7 +117,9 @@ function generateMemoryTable(element,memory){
 
     let text = '<tr><td></td>';
 
-    for (let j = 0; j < tableMemoryWidth; j++)text += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
+    for (let j = 0; j < tableMemoryWidth; j++){
+        text += '<td>' + byteAsHex(j,getBaseLog(hex, tableMemoryWidth)) + '</td>';
+    }
     
     text += '</tr>';
 
@@ -152,11 +154,16 @@ function generateRegisterTable(element){
 }
 
 function generateFlagTable(element){
-    let text = "";
-    for (let i = 0; i < flagsNames.length; i++) text += flagsNames[i] + " ";
-    text += "<br>";
-    for (let i = 0; i < flags.length; i++) text += flags[i] + " ";
-    element.innerHTML = text;
+    
+    let namesText = "";
+    let flagsText = "<br>";
+
+    for (let i = 0; i < flagsNames.length; i++){
+        namesText += flagsNames[i] + " ";
+        flagsText += flags[i] + " ";
+    }
+
+    element.innerHTML = namesText + flagsText;
 }
 
 
@@ -268,7 +275,9 @@ function run(){
     
     running = setInterval(
         function () {
-            for (let i = 0; i < timesPerInterval; i++)singleStep();
+            for (let i = 0; i < timesPerInterval; i++){
+                singleStep();
+            }
         },
     interval);
 }

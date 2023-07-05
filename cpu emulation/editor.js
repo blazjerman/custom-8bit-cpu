@@ -11,7 +11,10 @@ codeTextarea.addEventListener("input", function () {
 function updateLineNumbers() {
   let numbers = "";
 
-  for (let i = 0; i < codeTextarea.value.split("\n").length; i++)numbers = numbers + (i + 1) + "<br>" ;
+  for (let i = 0; i < codeTextarea.value.split("\n").length; i++){
+    numbers = numbers + (i + 1) + "<br>" ;
+  }
+  
   document.querySelector(".lines").innerHTML = numbers;
 
 }
