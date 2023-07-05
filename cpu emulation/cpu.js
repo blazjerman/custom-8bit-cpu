@@ -207,7 +207,11 @@ function get32ColorFrom8(color){
 
 
 
-
+//assemble for cpu
+function assembleCode(){
+    let code = getFilteredCodeText();
+    console.log(code);
+}
 
 
 

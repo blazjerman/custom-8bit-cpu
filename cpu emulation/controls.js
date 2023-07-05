@@ -23,7 +23,7 @@ function setFrequency(){
 }
 
 function assemble(){
-
+    assembleCode();
 }
 function step(){
     singleStep();
@@ -32,10 +32,10 @@ function step(){
 function start(){
     
     if(running==undefined){
-        elementStart.innerText="Stop";
+        elementStart.innerHTML="&#9724; Stop";
         run();
     }else{
-        elementStart.innerText="Start";
+        elementStart.innerHTML="&#9654; Start";
         clearInterval(running);
         running = undefined;
     }

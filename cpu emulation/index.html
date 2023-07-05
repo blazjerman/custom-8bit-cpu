@@ -9,9 +9,10 @@
     <div class="panel">
         <button>Speed: </button>
         <select id="frequency" class="select dropDown" name="Frequency" onchange="setFrequency()"></select> 
-        <button id="assemble" onclick="assemble()" class="select">Assemble</button>
-        <button id="step" onclick="step()" class="select">Step</button>
-        <button id="start" onclick="start()" class="select">Start</button>
+        <button style="width: 4vh;"></button>
+        <button id="assemble" onclick="assemble()" class="select">&#128736; Assemble</button>
+        <button id="step" onclick="step()" class="select" style="padding-top: 0.5vh;">&#9654;&#9654; Step</button>
+        <button id="start" onclick="start()" class="select" style="padding-top: 0.5vh;">&#9654; Start</button>
     </div>
 
     <div class="mainContainer">
@@ -19,6 +20,7 @@
         <div class="section">
             <div class="codeEditor">
                 <div class="lines"></div>
+                <div id="overCode" contenteditable="true"></div>
                 <textarea id="code" wrap="off"></textarea>
             </div>
         </div>
