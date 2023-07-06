@@ -11,7 +11,7 @@ codeTextarea.addEventListener("input", function () {
 function updateLineNumbers() {
   let numbers = "";
 
-  for (let i = 0; i < codeTextarea.value.split("\n").length; i++){
+  for (let i = 0; i < codeTextarea.value.split(/\n/).length; i++){
     numbers = numbers + (i + 1) + "<br>" ;
   }
   
@@ -22,7 +22,7 @@ function updateLineNumbers() {
 
 function getFilteredCodeText(){
 
-  let textArray = codeTextarea.value.split("\n");
+  let textArray = codeTextarea.value.split(/\n|\s+/);
 
   for (let i = 0; i < textArray.length; i++){
     textArray[i] = textArray[i].replace(commentRegex, '').trimEnd().trimStart();

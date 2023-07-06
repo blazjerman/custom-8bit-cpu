@@ -37,7 +37,8 @@ let instructionNames = Array(
     "AND",
     "XOR",
     "SHL",
-    "SHR"
+    "SHR",
+    "CMP"
 )
 
 //Instruction execution
@@ -55,6 +56,7 @@ function run(){
     running = setInterval(
         function () {
             for (let i = 0; i < timesPerInterval; i++){
+                if(flags[2]==1)break;
                 singleStep();
             }
         },
@@ -117,6 +119,7 @@ function exicuteCommand(){
         case 24:XOR(0,1);break;
         case 25:SHL(0);break;
         case 26:SHR(0);break;
+        case 27:CMP(0,1);break;
     }
 }
 
@@ -125,6 +128,7 @@ function exicuteCommand(){
 function assembleCode(){
 
     assembyPointer = 0;
+    indexStep = 0;
 
     if(running != undefined){
         start();
@@ -226,6 +230,13 @@ function PUSH(index){
     registers[5] = (registers[5] + 1) & 0xff;
     readp();
 }
+function POPR(){
+    registers[5] = (registers[5] - 1) & 0xff;
+    registers[6] = SPM[registers[5]];
+    registers[5] = (registers[5] - 1) & 0xff;
+    registers[6] |= SPM[registers[5]] << 8;
+    readp();
+}
 function PUSHP(){
     const pointer = registers[4] - 1; //Needs to be fixed!!!
     
@@ -321,12 +332,17 @@ function NOT(index){
 function INC(index){
     const value = registers[index] + 1;
     flags[0] = (value >> 8) & 0x01;
-    flags[1] = (registers[index] === 0);
+    flags[1] = (value === 0);
     registers[index] = value & 0xff;
 }
 function DEC(index){
     const value = registers[index] - 1;
     flags[0] = (value >> 8) & 0x01;
-    flags[1] = (registers[index] === 0);
+    flags[1] = (value === 0);
     registers[index] = value & 0xff;
+}
+function CMP(xIndex,yIndex){
+    const value = registers[xIndex] - registers[yIndex];
+    flags[0] = (value >> 8) & 0x01;
+    flags[1] = (value === 0);
 }
