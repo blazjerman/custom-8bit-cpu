@@ -7,8 +7,6 @@ let maxTableMemoryHeight = 20;
 let screenStartIndex = 0;
 let screenSize = 16;
 
-let stepFrequency = 1;
-
 const hex = 16;
 
 //Memory
@@ -36,9 +34,7 @@ const elementFlags = document.getElementById("flags");
 let updateScreen = true;
 let updateMemoryReg = true;
 
-//Run
-let indexStep = 0; //4 are needed for one instruction (two cycles)
-let running;
+
 
 
 //50hz update interval of screen.
@@ -88,17 +84,6 @@ function fillArrayWithZerros(array){
 }
 
 
-
-SPM[0] = 1;
-SPM[1] = 6;
-
-RAM[0] = 1;
-RAM[1] = 6;
-RAM[2] = 2;
-RAM[3] = 4;
-RAM[4] = 5;
-RAM[5] = 6;
-RAM[6] = 4;
 
 
 
@@ -212,143 +197,3 @@ function get32ColorFrom8(color){
     const b = Math.round(((color&3)/3)*255);
     return "rgb("+ r + ", " + g + ", " + b + ")"
 }
-
-
-
-
-
-//Instruction execution
-
-
-//Frequency control
-
-
-
-function run(){
-        
-    const timesPerInterval = Math.ceil(stepFrequency / 1000);
-    const interval = stepFrequency <= 1000? 1 / stepFrequency * 1000 : 1;
-    
-    running = setInterval(
-        function () {
-            for (let i = 0; i < timesPerInterval; i++){
-                singleStep();
-            }
-        },
-    interval);
-}
-
-
-function singleStep(){ 
-    switch(indexStep) {
-        case 0:
-            WRITEP();  //Copy P in RIN
-            READR();   //Get ROUT from RIN
-            break;
-        case 1:
-            READI();   //Copy ROUT in I
-            INCP();    //Increase P
-            break;
-        case 2:
-            WRITEP();  //Copy P in RIN
-            READR();   //Get ROUT from RIN
-            break;
-        case 3:
-            exicuteCommand();   //Execute instruction from I (exicuteCommand will Increase P if its needed.)
-    }
-
-    updateScreen = true;
-    updateMemoryReg = true;
-    
-    indexStep++;
-    if(indexStep==4)indexStep=0;
-}
-
-
-function exicuteCommand(){
-
-    switch(registers[3]) {
-        case 1:
-            READ(0);//Premakni iz rama v A
-            INCP();//Povečaj P
-            break;
-        case 2:
-            READ(1);//Premakni iz rama v B
-            INCP();//Povečaj P
-            break;
-        case 3:
-            RAM[registers[1]] = registers[0];//Kopira A v RAM glede na poiter B-ja
-            break;
-        case 4:
-            registers[4] = registers[1];//Kopira B v P
-            break;
-        case 5:
-            INC(0);//Povečaj A
-            break;
-        case 6:
-            RAM[registers[0]] = registers[0];//Kopira A v RAM glede na poiter A-ja (kr neki)
-            break;
-      }
-}
-
-function exicuteCommandTest(value){
-    switch(value) {
-        
-              case 2:MOV(0,1);
-        break;case 3:SUM(0,1);
-        break;case 4:SUB(0,1);
-        break;case 5:SHL(0);
-        break;case 6:SHR(0);
-        break;case 7:AND(0,1);
-        break;case 8:OR(0,1);
-        break;case 9:XOR(0,1);
-        break;case 10:NOT(0);
-        break;case 11:INC(0);
-        break;case 12:DEC(0);
-        break;case 13:INCP();
-        break;case 14:READR();
-        break;case 15:WRITEP();
-        break;case 16:READI();
-        break;case 17:READ(0);
-        break;case 18:POP(0);
-        break;case 19:PUSH(0);
-        break;case 20:POPR();
-        break;case 21:PUSHP();
-        break;case 22:JIC();
-        break;case 23:JIZ();
-        break;case 24:JICZ();
-        break;case 25:JINC();
-        break;case 26:JINZ();
-        break;case 27:JINCZ();
-    }
-}
-
-
-/*
-MOV(0,1
-SUM(0,1
-SUB();b
-SHL();b
-SHR();b
-AND();b
-OR();br
-XOR();b
-NOT();b
-INC();b
-DEC();b
-INCP();
-READR()
-WRITEP(
-READI()
-READ();
-POP();b
-PUSH();
-POPR();
-PUSHP()
-JIC();b
-JIZ();b
-JICZ();
-JINC();
-JINZ();
-JINCZ()
-*/

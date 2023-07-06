@@ -17,7 +17,7 @@ function generateSpeedSelection(element){
 generateSpeedSelection(elementSelect);
 
 function setFrequency(){
-    stepFrequency = elementSelect.value * 2;
+    stepFrequency = elementSelect.value;
     if(running!=undefined){
         start();
         start();

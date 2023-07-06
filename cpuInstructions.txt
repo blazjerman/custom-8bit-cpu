@@ -18,6 +18,8 @@ REGAB:
 ALU:
 -enable
 -sum 
+-inc
+-dec
 -sub 
 -not 
 -or
