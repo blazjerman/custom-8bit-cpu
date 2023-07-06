@@ -1,5 +1,5 @@
 let SPMSize = 256;       //Divisor of maxMemoryTableHeight (max: 256)
-let RAMSize = 65536;    //Divisor of maxMemoryTableHeight (max: 65536)
+let RAMSize = 65536;     //Divisor of maxMemoryTableHeight (max: 65536)
 
 let tableMemoryWidth = 16;
 let maxTableMemoryHeight = 20;
@@ -36,12 +36,19 @@ const elementFlags = document.getElementById("flags");
 let updateScreen = true;
 let updateMemoryReg = true;
 
+//
+let indexStep = 0; //4 are needed for one instruction (two cycles)
+let running;
+
+
 //50hz update interval of screen.
 setInterval(
     function (){
         if(!updateScreen)return;
         updateScreen = false;
-        updateScreeRegs()
+        
+        //Update Screen
+        generateScreen(elementScreen,RAM,screenStartIndex,screenSize,screenSize);   
     },
 20); 
 
@@ -51,30 +58,34 @@ setInterval(
     function (){
         if(!updateMemoryReg)return;
         updateMemoryReg = false;
-        updateMemoryRegFlag()
+        
+        //Update memory.
+        generateMemoryTable(elementSPM,SPM); 
+        generateMemoryTable(elementRAM,RAM);
+        //Update Regs. and memory pointers.
+        generateRegisterTable(elementRegister);
+        updatePointerToTableMemory(elementRAM, registers[4],"P");
+        updatePointerToTableMemory(elementSPM, registers[5],"SP");
+        updatePointerToTableMemory(elementRAM, registers[6],"RIN");
+        //Update flags.
+        generateFlagTable(elementFlags);
     },
 100); 
 
 
-function updateScreeRegs(){
-    //Update Screen
-    generateScreen(elementScreen,RAM,screenStartIndex,screenSize,screenSize);   
+
+function setAllToZerro(){
+    fillArrayWithZerros(RAM);
+    fillArrayWithZerros(SPM);
+    fillArrayWithZerros(registers);
+    fillArrayWithZerros(flags);
 }
 
-function updateMemoryRegFlag(){
-    //Update memory.
-    generateMemoryTable(elementSPM,SPM); 
-    generateMemoryTable(elementRAM,RAM);
-    //Update Regs. and memory pointers.
-    generateRegisterTable(elementRegister);
-    updatePointerToTableMemory(elementRAM, registers[4],"P");
-    updatePointerToTableMemory(elementSPM, registers[5],"SP");
-    updatePointerToTableMemory(elementRAM, registers[6],"RIN");
-    //Update flags.
-    generateFlagTable(elementFlags);
+function fillArrayWithZerros(array){
+    for (let i = 0; i < array.length; i++){
+        array[i] = 0;
+    }
 }
-
-
 
 
 
@@ -210,14 +221,28 @@ function get32ColorFrom8(color){
 
 //assemble for cpu
 function assembleCode(){
+
+    if(running != undefined){
+        start();
+    }
+
     let code = getFilteredCodeText();
-    console.log(code);
+
+    setAllToZerro();
+
+    for (let i = 0; i < code.length; i++) {
+        addInstruction(code[i]);
+    }
+
+    updateMemoryReg = true;
+    updateScreen = true;
+
 }
 
 
 
 //Commands
-function command(name){
+function addInstruction(name){
 
     if(!isNaN(parseInt(name))){
         addToRam(parseInt(name));
@@ -225,11 +250,11 @@ function command(name){
     }
 
     switch(name) {
-        case "MOV A B":
+        case "MOVA":
             addToRam(1);return;
-        case "MOV B A":
+        case "MOVB":
             addToRam(2);return;
-        case "MOV A R":
+        case "MOVAB":
             addToRam(3);return;
       }
 
@@ -239,7 +264,7 @@ function command(name){
 function addToRam(value){
     for (let i = 0; i < RAM.length; i++) {
         if(RAM[i] == 0){
-            setRandomAccesMemory(i,value);
+            RAM[i]=value;
             break;
         }
     }
@@ -259,8 +284,7 @@ function addToRam(value){
 
 //Frequency control
 
-let indexStep = 0; //4 are needed for one instruction (two cycles)
-let running;
+
 
 function run(){
         

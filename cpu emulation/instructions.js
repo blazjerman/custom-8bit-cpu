@@ -1,6 +1,5 @@
 /*
-Arithmetic logic unit functions (it works only on registers).
-There is 26 different functions.
+There is 26 different instructions.
 */
 
 //Basic movement
