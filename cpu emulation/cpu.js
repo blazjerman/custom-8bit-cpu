@@ -4,7 +4,7 @@ let RAMSize = 65536;     //Divisor of maxMemoryTableHeight (max: 65536)
 let tableMemoryWidth = 16;
 let maxTableMemoryHeight = 20;
 
-let screenStartIndex = 0;
+let screenStartIndex = 65536 - 256;
 let screenSize = 16;
 
 const hex = 16;

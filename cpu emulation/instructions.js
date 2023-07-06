@@ -3,7 +3,7 @@ let assembyPointer = 0;
 
 //Run
 let stepFrequency = 1;
-let indexStep = 0; //2 are needed for one instruction (two cycles)
+let indexStep = 0;
 let running;
 
 let instructionNames = Array(
@@ -29,8 +29,6 @@ let instructionNames = Array(
     "JIFNCZ",
     
     "SUM",
-    "INC",
-    "DEC",
     "SUB",
     "NOT",
     "OR",
@@ -45,9 +43,6 @@ let instructionNames = Array(
 
 
 //Frequency control
-
-
-
 function run(){
         
     const timesPerInterval = Math.ceil(stepFrequency / 1000);
@@ -67,7 +62,7 @@ function run(){
 function singleStep(){ 
     switch(indexStep) {
         case 0:
-            SETP();  //Copy P in RIN
+            SETP();    //Copy P in RIN
             READR();   //Get ROUT from RIN
             READI();   //Copy ROUT in I
             INCP();    //Increase P
@@ -110,16 +105,14 @@ function exicuteCommand(){
         case 16:JIFNCZ();break;
 
         case 17:SUM(0,1);break;
-        case 18:INC(0);break;
-        case 19:DEC(0);break;
-        case 20:SUB(0,1);break;
-        case 21:NOT(0);break;
-        case 22:OR(0,1);break;
-        case 23:AND(0,1);break;
-        case 24:XOR(0,1);break;
-        case 25:SHL(0);break;
-        case 26:SHR(0);break;
-        case 27:CMP(0,1);break;
+        case 18:SUB(0,1);break;
+        case 19:NOT(0);break;
+        case 20:OR(0,1);break;
+        case 21:AND(0,1);break;
+        case 22:XOR(0,1);break;
+        case 23:SHL(0);break;
+        case 24:SHR(0);break;
+        case 25:CMP(0,1);break;
     }
 }
 
@@ -165,16 +158,6 @@ function addInstruction(name){
     assembyPointer++;
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -328,18 +311,6 @@ function NOT(index){
     const value = ~registers[index];
     flags[1] = (value === 0);
     registers[index] = value;
-}
-function INC(index){
-    const value = registers[index] + 1;
-    flags[0] = (value >> 8) & 0x01;
-    flags[1] = (value === 0);
-    registers[index] = value & 0xff;
-}
-function DEC(index){
-    const value = registers[index] - 1;
-    flags[0] = (value >> 8) & 0x01;
-    flags[1] = (value === 0);
-    registers[index] = value & 0xff;
 }
 function CMP(xIndex,yIndex){
     const value = registers[xIndex] - registers[yIndex];
