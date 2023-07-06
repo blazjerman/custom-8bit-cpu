@@ -1,0 +1,42 @@
+//This instructions are based on real pins on chip.
+
+RAM:
+-enable
+-read
+-write 
+
+SPM:
+-enable
+-pop 8 or 16
+-push 8 or 16
+
+REGAB:
+-enable
+-write A or B
+-read A or B
+
+ALU:
+-enable
+-sum 
+-sub 
+-not 
+-or
+-and
+-xor 
+-shl 
+-shr 
+
+JMP:
+-enable
+-inc by 1
+-inc by 4 (POINTER) if c or not
+-inc by 4 (POINTER) if z or not
+-ignore c 
+-ignore z 
+
+INT: (Cpu freq must be much higher then device)
+-enable
+-enable or disable check
+-read
+-write
+

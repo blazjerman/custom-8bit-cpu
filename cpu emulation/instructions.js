@@ -1,3 +1,92 @@
+let assembyPointer = 0;
+
+let instructionNames = Array(
+    "END",
+
+    "MOVA",
+    "MOVB",
+    "READA",
+    "READB",
+    
+    "POPA",
+    "POPB",
+    "PUSHA",
+    "PUSHB",
+    "PUSHR",
+    "POPP",
+    
+    "SUM",
+    "SUB",
+    "NOT",
+    "OR",
+    "AND",
+    "XOR",
+    "SHL",
+    "SHR",
+
+    "JIFC",
+    "JIFZ",
+    "JIFNC",
+    "JIFNZ",
+    "JIFCZ",
+    "JIFNCZ"
+
+)
+
+
+//assemble for cpu
+function assembleCode(){
+
+    if(running != undefined){
+        start();
+    }
+
+    let code = getFilteredCodeText();
+
+    setAllToZerro();
+
+    for (let i = 0; i < code.length; i++) {
+        addInstruction(code[i]);
+    }
+
+    updateMemoryReg = true;
+    updateScreen = true;
+
+}
+
+
+
+//Commands
+function addInstruction(name){
+
+    if(!isNaN(parseInt(name))){
+        addToRam(parseInt(name));
+        return;
+    }
+
+    const indexOfName = instructionNames.indexOf(name);
+
+    if(indexOfName==-1)return;
+
+    RAM[assembyPointer] = indexOfName;
+    assembyPointer++;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 There is 26 different instructions.
 */

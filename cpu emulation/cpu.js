@@ -36,7 +36,7 @@ const elementFlags = document.getElementById("flags");
 let updateScreen = true;
 let updateMemoryReg = true;
 
-//
+//Run
 let indexStep = 0; //4 are needed for one instruction (two cycles)
 let running;
 
@@ -212,68 +212,6 @@ function get32ColorFrom8(color){
     const b = Math.round(((color&3)/3)*255);
     return "rgb("+ r + ", " + g + ", " + b + ")"
 }
-
-
-
-
-
-
-
-//assemble for cpu
-function assembleCode(){
-
-    if(running != undefined){
-        start();
-    }
-
-    let code = getFilteredCodeText();
-
-    setAllToZerro();
-
-    for (let i = 0; i < code.length; i++) {
-        addInstruction(code[i]);
-    }
-
-    updateMemoryReg = true;
-    updateScreen = true;
-
-}
-
-
-
-//Commands
-function addInstruction(name){
-
-    if(!isNaN(parseInt(name))){
-        addToRam(parseInt(name));
-        return;
-    }
-
-    switch(name) {
-        case "MOVA":
-            addToRam(1);return;
-        case "MOVB":
-            addToRam(2);return;
-        case "MOVAB":
-            addToRam(3);return;
-      }
-
-}
-
-
-function addToRam(value){
-    for (let i = 0; i < RAM.length; i++) {
-        if(RAM[i] == 0){
-            RAM[i]=value;
-            break;
-        }
-    }
-}
-
-
-
-
-
 
 
 
