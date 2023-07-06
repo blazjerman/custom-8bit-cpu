@@ -14,6 +14,8 @@ function generateSpeedSelection(element){
     element.innerHTML = text
 }
 
+generateSpeedSelection(elementSelect);
+
 function setFrequency(){
     stepFrequency = elementSelect.value * 2;
     if(running!=undefined){
@@ -43,5 +45,3 @@ function start(){
 }
 
 
-
-generateSpeedSelection(elementSelect);

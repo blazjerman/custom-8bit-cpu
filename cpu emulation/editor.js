@@ -30,6 +30,3 @@ function getFilteredCodeText(){
 
   return textArray;
 }
-
-
-updateLineNumbers();

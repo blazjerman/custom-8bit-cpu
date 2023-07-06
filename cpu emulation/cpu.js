@@ -78,22 +78,16 @@ function updateMemoryRegFlag(){
 
 
 
-//First run.
-function generateTables(){
-    SPM[0] = 1;
-    SPM[1] = 6;
-    
-    RAM[0] = 1;
-    RAM[1] = 6;
-    RAM[2] = 2;
-    RAM[3] = 4;
-    RAM[4] = 5;
-    RAM[5] = 6;
-    RAM[6] = 4;
-    
-    updateScreeRegs();
-    updateMemoryRegFlag(); 
-}
+SPM[0] = 1;
+SPM[1] = 6;
+
+RAM[0] = 1;
+RAM[1] = 6;
+RAM[2] = 2;
+RAM[3] = 4;
+RAM[4] = 5;
+RAM[5] = 6;
+RAM[6] = 4;
 
 
 
