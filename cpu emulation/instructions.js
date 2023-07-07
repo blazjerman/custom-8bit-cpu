@@ -186,12 +186,6 @@ function assembleCode(){
 
     //Move to memory.
     addInstructions(code);
-
-    
-
-    updateMemoryReg = true;
-    updateScreen = true;
-
 }
 
 
@@ -225,6 +219,10 @@ function addInstructions(code){
 
         }
     }
+
+    updateMemoryReg = true;
+    updateScreen = true;
+    
 }
 
 function compileError(line){
