@@ -15,7 +15,7 @@ function updateLineNumbers() {
   let numbers = "";
 
   for (let i = 0; i < codeTextareaElement.value.split(newLineRegex).length; i++){
-    numbers = numbers + '<span id = "id_' + i + '">' + (i + 1) + '</span><br>';
+    numbers = numbers + '<span class = "id_' + i + '">' + (i + 1) + '</span><br>';
   }
   
   linesElement.innerHTML = numbers;
@@ -35,11 +35,20 @@ function getFilteredCodeText(){
 
 
 function setLineError(line){
-  document.getElementById("id_"+line).classList.add("lineError");
+  document.getElementsByClassName("id_"+line)[0].classList.add("lineError");
 }
 
 function setPointerAtLine(line){
-  updateLineNumbers();
+
+  const cl = "pointerAtLine";
+  const pointerAtLineElement = document.getElementsByClassName(cl);
+
+  if(pointerAtLineElement.length!=0){
+    pointerAtLineElement[0].classList.remove(cl);
+  }
+
   if(line==-1)return;
-  document.getElementById("id_"+line).classList.add("pointerAtLine");
+
+  document.getElementsByClassName("id_"+line)[0].classList.add(cl);
+
 }
