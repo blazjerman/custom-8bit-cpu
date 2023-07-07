@@ -1,9 +1,12 @@
-const codeTextarea = document.getElementById("code");
-const overCodeTextarea = document.getElementById("overCode");
+const codeTextareaElement = document.getElementById("code");
+const overCodeTextareaElement = document.getElementById("overCode");
+const linesElement = document.getElementById("lines");
 
 const commentRegex = /(\/\/.*)/g;
+const newLineRegex = /\n/;
+const multipleSpacesRegex = /\s+/;
 
-codeTextarea.addEventListener("input", function () {
+codeTextareaElement.addEventListener("input", function () {
   updateLineNumbers();
 });
 
@@ -11,22 +14,32 @@ codeTextarea.addEventListener("input", function () {
 function updateLineNumbers() {
   let numbers = "";
 
-  for (let i = 0; i < codeTextarea.value.split(/\n/).length; i++){
-    numbers = numbers + (i + 1) + "<br>" ;
+  for (let i = 0; i < codeTextareaElement.value.split(newLineRegex).length; i++){
+    numbers = numbers + '<span id = "id_' + i + '">' + (i + 1) + '</span><br>';
   }
   
-  document.querySelector(".lines").innerHTML = numbers;
+  linesElement.innerHTML = numbers;
 
 }
 
 
 function getFilteredCodeText(){
 
-  let textArray = codeTextarea.value.split(/\n|\s+/);
+  let textArray = codeTextareaElement.value.split(newLineRegex);
 
   for (let i = 0; i < textArray.length; i++){
-    textArray[i] = textArray[i].replace(commentRegex, '').trimEnd().trimStart();
+    textArray[i] = textArray[i].replace(commentRegex, '').trimEnd().trimStart().split(multipleSpacesRegex);
   }
-
   return textArray;
+}
+
+
+function setLineError(line){
+  document.getElementById("id_"+line).classList.add("lineError");
+}
+
+function setPointerAtLine(line){
+  updateLineNumbers();
+  if(line==-1)return;
+  document.getElementById("id_"+line).classList.add("pointerAtLine");
 }

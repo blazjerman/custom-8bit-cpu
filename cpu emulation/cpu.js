@@ -65,6 +65,8 @@ setInterval(
         updatePointerToTableMemory(elementRAM, registers[6],"RIN");
         //Update flags.
         generateFlagTable(elementFlags);
+        //Update editor.
+        updeteEditorLinePos();
     },
 100); 
 
@@ -97,6 +99,23 @@ function updatePointerToTableMemory(element, index, cl){
         element.getElementsByClassName("id_"+index)[0].classList.add(cl);
     }
 
+}
+
+function updeteEditorLinePos(){
+
+    if(stepsPerLine == undefined)return;
+
+    let sum = 0;
+
+    for (let i = 0; i < stepsPerLine.length; i++){
+        
+        sum += stepsPerLine[i];
+
+        if(sum>registers[6]){
+            setPointerAtLine(i);
+            return;
+        }
+    }
 }
 
 

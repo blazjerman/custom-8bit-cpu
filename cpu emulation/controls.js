@@ -19,8 +19,8 @@ generateSpeedSelection(elementSelect);
 function setFrequency(){
     stepFrequency = elementSelect.value;
     if(running!=undefined){
-        start();
-        start();
+        startStop();
+        startStop();
     }
 }
 
@@ -31,7 +31,7 @@ function step(){
     singleStep();
 }
 
-function start(){
+function startStop(){
     
     if(running==undefined){
         elementStart.innerHTML="&#9724; Stop";

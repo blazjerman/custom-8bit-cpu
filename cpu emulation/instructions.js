@@ -1,5 +1,6 @@
 //Assembler
 let assembyPointer = 0;
+let stepsPerLine;
 
 //Run
 let stepFrequency = 1;
@@ -130,16 +131,63 @@ function assembleCode(){
     indexStep = 0;
 
     if(running != undefined){
-        start();
+        startStop();
     }
 
-    let code = getFilteredCodeText();
+    const code = getFilteredCodeText();
+    stepsPerLine = new Int8Array(code.length);
+
+    //Get execution steps for every line of code.
+    for (let i = 0; i < code.length; i++) {
+        for (let j = 0; j < code[i].length; j++) {
+            
+            const instruction = code[i][j];
+
+            if(instructionNames.indexOf(instruction) != -1){
+                stepsPerLine[i]++;
+            }else if(!isNaN(parseInt(instruction))){
+                stepsPerLine[i]++;
+            }else if(instruction.at(-1) == ">"){
+                stepsPerLine[i]+=4;
+            }
+        }
+    }
+
+    
+    //Setup jumps.
+    for (let i = 0; i < code.length; i++) {
+        for (let j = 0; j < code[i].length; j++){
+
+            const instruction = code[i][j];
+
+            if(instruction.at(-1) == ">"){
+
+                let locationIndex = 0;
+
+                for (let k = 0; k < code.length; k++){
+
+                    if(instruction.slice(0, -1)+":"==code[k][0]){
+                        code[k][0] = "";
+                        code[i].splice(j, 1, "PUSHR",((locationIndex >> 8 ) & 0xff) + "","PUSHR",(locationIndex & 0xff) + "");
+                        break;  
+                    }
+
+                    locationIndex += stepsPerLine[k];
+
+                }
+            }
+        }
+    }
 
     setAllToZerro();
 
-    for (let i = 0; i < code.length; i++) {
-        addInstruction(code[i]);
-    }
+    //console.log(code);
+    //console.log(stepsPerLine);
+
+    //Move to memory.
+    addInstructions(code);
+
+    
 
     updateMemoryReg = true;
     updateScreen = true;
@@ -149,23 +197,40 @@ function assembleCode(){
 
 
 //Commands
-function addInstruction(name){
+function addInstructions(code){
+    
+    for (let i = 0; i < code.length; i++) {
+        for (let j = 0; j < code[i].length; j++){
 
-    const instruction = parseInt(name);
+            const name = code[i][j];
 
-    if(!isNaN(instruction)){
-        RAM[assembyPointer] = instruction;
-    }else{
-        const indexOfName = instructionNames.indexOf(name);
-        if(indexOfName==-1)return;
-        RAM[assembyPointer] = indexOfName;
+            if(name == "") continue;
+
+            const instruction = parseInt(name);
+        
+            if(!isNaN(instruction)){
+                RAM[assembyPointer] = instruction;
+            }else{
+                const indexOfName = instructionNames.indexOf(name);
+                
+                if(indexOfName==-1){
+                    compileError(i);
+                    return;
+                }
+        
+                RAM[assembyPointer] = indexOfName;
+            }
+        
+            assembyPointer++;
+
+        }
     }
-
-    assembyPointer++;
-
 }
 
-
+function compileError(line){
+    console.log("Compile error!!! At line: " + (line + 1));
+    setLineError(line)
+}
 
 
 

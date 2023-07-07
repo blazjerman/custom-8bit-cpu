@@ -47,13 +47,17 @@ body{
     display: flex;
     min-height: 96vh;
 }
-.lines{
+#lines{
     width: 20px;
     background-color: rgb(207, 207, 207);
-    color: rgb(55, 55, 55);
     padding: 10px;
     text-align: right;
     user-select: none;
+}
+#lines span{
+    color: rgb(55, 55, 55);
+    padding: 3px;
+    border-radius: 5px;
 }
 #code{
     background-color: rgb(24, 24, 24);
@@ -64,7 +68,12 @@ body{
     border: none;
     outline: none;
 }
-
+.lineError{
+    background-color: red;
+}
+.pointerAtLine{
+    background-color: rgb(46, 95, 255);
+}
 
 .memory{
     float: right;
