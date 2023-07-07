@@ -53,8 +53,7 @@ function run(){
     running = setInterval(
         function () {
             for (let i = 0; i < timesPerInterval; i++){
-                if(flags[2]==1)break;
-                singleStep();
+                if(!singleStep())break;
             }
         },
     interval);
@@ -62,6 +61,7 @@ function run(){
 
 
 function singleStep(){ 
+    if(flags[2]==1)return false;
     switch(indexStep) {
         case 0:
             SETP();    //Copy P in RIN
@@ -79,6 +79,8 @@ function singleStep(){
     
     indexStep++;
     if(indexStep==2)indexStep=0;
+
+    return true;
 }
 
 
