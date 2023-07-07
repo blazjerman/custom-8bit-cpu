@@ -2,24 +2,25 @@
 
 RAM:
 -enable
--read
--write 
+-read/write 
 
 SPM:
 -enable
--pop 8 or 16
--push 8 or 16
+-pop/push
+-8/16
+-c 
+-z 
+//-igonr c 
+//-ignore z 
+-l/r
 
 REGAB:
 -enable
--write A or B
--read A or B
+-write/read
+-A/B
 
 ALU:
--enable
 -sum 
--inc
--dec
 -sub 
 -not 
 -or
@@ -28,13 +29,11 @@ ALU:
 -shl 
 -shr 
 
-JMP:
+POINTER:
 -enable
+-read/write
 -inc by 1
--inc by 4 (POINTER) if c or not
--inc by 4 (POINTER) if z or not
--ignore c 
--ignore z 
+-l/r
 
 INT: (Cpu freq must be much higher then device)
 -enable

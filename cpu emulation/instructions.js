@@ -36,7 +36,9 @@ let instructionNames = Array(
     "XOR",
     "SHL",
     "SHR",
-    "CMP"
+    "CMP",
+
+    "PUSHR"
 )
 
 //Instruction execution
@@ -95,7 +97,7 @@ function exicuteCommand(){
         case 7:PUSH(0);break;
         case 8:PUSH(1);break;
         case 9:PUSHP();break;
-
+        
         case 10:JMP();break;
         case 11:JIFC();break;
         case 12:JIFZ();break;
@@ -113,6 +115,8 @@ function exicuteCommand(){
         case 23:SHL(0);break;
         case 24:SHR(0);break;
         case 25:CMP(0,1);break;
+
+        case 26:READR();PUSH(7);INCP();break;
     }
 }
 
@@ -295,22 +299,22 @@ function SHR(index){
 function AND(xIndex,yIndex){
     const value = registers[xIndex] & registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value;
+    registers[xIndex] = value & 0xFF;
 }
 function OR(xIndex,yIndex){
     const value = registers[xIndex] | registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value;
+    registers[xIndex] = value & 0xFF;
 }
 function XOR(xIndex,yIndex){
     const value = registers[xIndex] ^ registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value;
+    registers[xIndex] = value & 0xFF;
 }
 function NOT(index){
     const value = ~registers[index];
     flags[1] = (value === 0);
-    registers[index] = value;
+    registers[index] = value & 0xFF;
 }
 function CMP(xIndex,yIndex){
     const value = registers[xIndex] - registers[yIndex];
