@@ -86,17 +86,17 @@ function fillArrayWithZerros(array){
 }
 
 
-
-
-
 function updatePointerToTableMemory(element, index, cl){
 
-    if(element.getElementsByClassName(cl).length!=0){
-        element.getElementsByClassName(cl)[0].classList.remove(cl);
+    const clElements = element.getElementsByClassName(cl);
+    const indexElements = element.getElementsByClassName("id_"+index);
+
+    if(clElements.length!=0){
+        clElements[0].classList.remove(cl);
     }
     
-    if(element.getElementsByClassName("id_"+index).length!=0){
-        element.getElementsByClassName("id_"+index)[0].classList.add(cl);
+    if(indexElements.length!=0){
+        indexElements[0].classList.add(cl);
     }
 
 }
