@@ -56,7 +56,7 @@ function POPR(){
     readp();
 }
 function PUSHP(){
-    const pointer = registers[4] - 1; //Needs to be fixed!!!
+    const pointer = registers[4];
     
     SPM[registers[5]] = pointer >> 8;
     registers[5] = (registers[5] + 1) & 0xff;
@@ -103,52 +103,47 @@ function JIFNCZ(){
 }
 
 //Simple arithmetics
-function SUM(xIndex,yIndex){
+function SUM(xIndex,yIndex,cmp){
     const value = registers[xIndex] + registers[yIndex];
     flags[0] = (value >> 8) & 0x01;
     flags[1] = (registers[xIndex] === 0);
-    registers[xIndex] = value & 0xff;
+    if(!cmp)registers[xIndex] = value & 0xff;
 }
-function SUB(xIndex,yIndex){
+function SUB(xIndex,yIndex,cmp){
     const value = registers[xIndex] - registers[yIndex];
     flags[0] = (value >> 8) & 0x01;
     flags[1] = (registers[xIndex] === 0);
-    registers[xIndex] = value & 0xff;
+    if(!cmp)registers[xIndex] = value & 0xff;
 }
-function SHL(index){
+function SHL(index,cmp){
     const value = registers[index] << 1;
     flags[0] = (registers[index] >> 7) & 0x01;
     flags[1] = ((value & 0xff) === 0);
-    registers[index] = value & 0xff;
+    if(!cmp)registers[index] = value & 0xff;
 }
-function SHR(index){
+function SHR(index,cmp){
     const value = registers[index] >> 1;
     flags[0] = registers[index] & 0x01;
     flags[1] = ((value & 0xff) === 0);
-    registers[index] = value & 0xff;
+    if(!cmp)registers[index] = value & 0xff;
 }
-function AND(xIndex,yIndex){
+function AND(xIndex,yIndex,cmp){
     const value = registers[xIndex] & registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value & 0xFF;
 }
-function OR(xIndex,yIndex){
+function OR(xIndex,yIndex,cmp){
     const value = registers[xIndex] | registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value & 0xFF;
 }
-function XOR(xIndex,yIndex){
+function XOR(xIndex,yIndex,cmp){
     const value = registers[xIndex] ^ registers[yIndex];
     flags[1] = (value === 0);
-    registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value & 0xFF;
 }
-function NOT(index){
+function NOT(index,cmp){
     const value = ~registers[index];
     flags[1] = (value === 0);
-    registers[index] = value & 0xFF;
-}
-function CMP(xIndex,yIndex){
-    const value = registers[xIndex] - registers[yIndex];
-    flags[0] = (value >> 8) & 0x01;
-    flags[1] = (value === 0);
+    if(!cmp)registers[index] = value & 0xFF;
 }

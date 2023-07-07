@@ -37,7 +37,16 @@ let instructionNames = Array(
     "XOR",
     "SHL",
     "SHR",
-    "CMP",
+
+    "CSUM",
+    "CSUB",
+    "CNOT",
+    "COR",
+    "CAND",
+    "CXOR",
+    "CSHL",
+    "CSHR",
+    
 
     "PUSHR"
 )
@@ -109,17 +118,26 @@ function exicuteCommand(){
         case 15:JIFCZ();break;
         case 16:JIFNCZ();break;
 
-        case 17:SUM(0,1);break;
-        case 18:SUB(0,1);break;
-        case 19:NOT(0);break;
-        case 20:OR(0,1);break;
-        case 21:AND(0,1);break;
-        case 22:XOR(0,1);break;
-        case 23:SHL(0);break;
-        case 24:SHR(0);break;
-        case 25:CMP(0,1);break;
+        case 17:SUM(0,1,false);break;
+        case 18:SUB(0,1,false);break;
+        case 19:NOT(0,false);break;
+        case 20:OR(0,1,false);break;
+        case 21:AND(0,1,false);break;
+        case 22:XOR(0,1,false);break;
+        case 23:SHL(0,false);break;
+        case 24:SHR(0,false);break;
 
-        case 26:READR();PUSH(7);INCP();break;
+        case 25:SUM(0,1,true);break;
+        case 26:SUB(0,1,true);break;
+        case 27:NOT(0,true);break;
+        case 28:OR(0,1,true);break;
+        case 29:AND(0,1,true);break;
+        case 30:XOR(0,1,true);break;
+        case 31:SHL(0,true);break;
+        case 32:SHR(0,true);break;
+        
+
+        case 33:READR();PUSH(7);INCP();break;
     }
 }
 
@@ -167,7 +185,6 @@ function assembleCode(){
                 for (let k = 0; k < code.length; k++){
 
                     if(instruction.slice(0, -1)+":"==code[k][0]){
-                        code[k][0] = "";
                         code[i].splice(j, 1, "PUSHR",((locationIndex >> 8 ) & 0xff) + "","PUSHR",(locationIndex & 0xff) + "");
                         break;  
                     }
@@ -193,6 +210,7 @@ function addInstructions(code){
             const name = code[i][j];
 
             if(name == "") continue;
+            if(name.at(-1) == ":")continue;
 
             const instruction = parseInt(name);
         
