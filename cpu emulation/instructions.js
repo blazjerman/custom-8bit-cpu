@@ -128,22 +128,22 @@ function SHR(index,cmp){
     if(!cmp)registers[index] = value & 0xff;
 }
 function AND(xIndex,yIndex,cmp){
-    const value = registers[xIndex] & registers[yIndex];
+    const value = registers[xIndex] & registers[yIndex] & 0xFF;
     flags[1] = (value === 0);
-    if(!cmp)registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value;
 }
 function OR(xIndex,yIndex,cmp){
-    const value = registers[xIndex] | registers[yIndex];
+    const value = (registers[xIndex] | registers[yIndex]) & 0xFF;
     flags[1] = (value === 0);
-    if(!cmp)registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value;
 }
 function XOR(xIndex,yIndex,cmp){
-    const value = registers[xIndex] ^ registers[yIndex];
+    const value = (registers[xIndex] ^ registers[yIndex]) & 0xFF;
     flags[1] = (value === 0);
-    if(!cmp)registers[xIndex] = value & 0xFF;
+    if(!cmp)registers[xIndex] = value;
 }
 function NOT(index,cmp){
-    const value = ~registers[index];
+    const value = (~registers[index]) & 0xFF;
     flags[1] = (value === 0);
-    if(!cmp)registers[index] = value & 0xFF;
+    if(!cmp)registers[index] = value;
 }
