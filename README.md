@@ -13,12 +13,12 @@ In the "cpu emulation" folder, an assembler is provided along with an emulator t
 
 
 
-#Assembler:
+# Assembler:
 
 
-##Assembler instruction:
+## Assembler instruction:
 
-###basic:
+### basic:
 "HLT": Halt the CPU, stopping further execution of instructions.
 
 "MOVA": Move a value from memory to register A.
@@ -65,7 +65,7 @@ Conditional operations (to be used before jumping):
 
 
 
-###Special stuff:
+### Special stuff:
 
 For jumping to specific location we can use:
 
@@ -83,7 +83,7 @@ Everything else is as you would expect.
 
 
 
-###Code example:
+### Code example:
 
 Below, we can see an example of code where it draws a cube on the screen, and the cube bounces off the sides.
 
