@@ -82,7 +82,7 @@ Everything else is as you would expect.
 
 ### Code example:
 
-Below, we can see an example of code where it draws a cube on the screen, and the cube bounces off the sides.
+Below, we can see an example of code where it draws a cube on the screen, and the cube bounces off the sides:
 
 MOVB 0x11
 MOVA 0x15
