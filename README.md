@@ -23,7 +23,7 @@ In the "cpu emulation" folder, an assembler is provided along with an emulator t
 - MOVB: Move a value from memory to register B.
 - READA: Read a value from register A into memory.
 - READB: Read a value from register B into memory.
-- 
+
 - POPA: Pop a value from the stack into register A.
 - POPB: Pop a value from the stack into register B.
 - PUSHA: Push the value in register A onto the stack.
@@ -39,7 +39,7 @@ In the "cpu emulation" folder, an assembler is provided along with an emulator t
 - JIFNZ: Jump to a specified memory address if the zero flag is not set.
 - JIFCZ: Jump to a specified memory address if either the carry or zero flag is set.
 - JIFNCZ: Jump to a specified memory address if neither the carry nor zero flag is set.
-- 
+
 - SUM: Add the values in registers A and B, storing the result in register A.
 - SUB: Subtract the value in register B from the value in register A, storing the result in register A.
 - NOT: Perform bitwise NOT operation on the value in register A.
