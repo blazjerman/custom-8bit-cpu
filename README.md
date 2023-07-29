@@ -28,7 +28,7 @@ In the "cpu emulation" folder, an assembler is provided along with an emulator t
 - POPB: Pop a value from the stack into register B.
 - PUSHA: Push the value in register A onto the stack.
 - PUSHB: Push the value in register B onto the stack.
-- PUSHP: Push the program counter (PC) onto the stack.
+- PUSHP: Push 16-bit program counter (PC) onto the stack.
 
 - PUSHR: Push from memory to stack.
 
