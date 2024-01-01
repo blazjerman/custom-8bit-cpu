@@ -1,4 +1,4 @@
-# costum-8bit-cpu
+# custom-8bit-cpu
 
 
 This project is dedicated to building an 8-bit custom processor using discrete transistors. It draws inspiration from Ben Eater, who created an 8-bit CPU (https://eater.net/8bit). The main highlight of this processor is that all operations are executed in a single cycle, enabling a very simple control logic. The processor itself is 8-bit and can access a 16-bit RAM and an 8-bit stack memory that is separate from the RAM. Additionally, it consists of two registers, a simple ALU (Arithmetic Logic Unit), control logic, and other essential components. In the "schematic" folder, you can find the connections of various CPU parts, including a "High-level overview."
