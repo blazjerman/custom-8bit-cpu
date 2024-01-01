@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Costum-8bit-cpu Assembler</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+    <div class="panel">
+        <button>Speed: </button>
+        <select id="frequency" class="select dropDown" name="Frequency" onchange="setFrequency()"></select> 
+        <button style="width: 4vh;"></button>
+        <button id="assemble" onclick="assemble()" class="select">&#9724;&#9654; Assemble</button>
+        <button id="step" onclick="step()" class="select">&#9654;&#9654; Step</button>
+        <button id="start" onclick="startStop()" class="select">&#9654; Start</button>
+    </div>
+
+    <div class="mainContainer">
+        
+        <div class="section">
+            <div class="codeEditor">
+                <div id="lines"><span class="id_0">1</span></div>
+                <textarea id="code" wrap="off"></textarea>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="memory">
+                <table>
+                    <tbody id="SPM"></tbody>
+                    <caption>Stack pointer memory</caption>
+                </table>
+            </div>
+            <div class="memory">
+                <table>
+                    <tbody id="RAM"></tbody>
+                    <caption>Random acces memory</caption>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="screen">
+                <table>
+                    <tbody id="screen"></tbody>
+                </table>
+            </div>
+            <div class="registers">
+                <table>
+                    <tbody id="registers"></tbody>
+                </table>
+            </div>
+            <div id="flags">
+            </div>
+        </div>
+
+      </div>
+
+    <script src="control.js"></script>
+    <script src="cpu.js"></script>
+    <script src="editor.js"></script>
+    <script src="instructions.js"></script>
+    <script src="panel.js"></script>
+    
+</body>
+</html>
