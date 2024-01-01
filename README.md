@@ -14,8 +14,7 @@ In the "cpu emulation" folder, an assembler is provided along with an emulator t
 
 
 ## Assembler:
-Assembler is available at: [blazjerman.github.io/costum-8bit-cpu/](./)
-
+Assembler is available at: https://blazjerman.github.io/costum-8bit-cpu/
 ### basic instruction:
 
 - HLT: Halt the CPU, stopping further execution of instructions.
