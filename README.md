@@ -5,7 +5,7 @@ This project is dedicated to building an 8-bit custom processor using discrete t
 
 The concept of a transistor-based processor: The idea is to design the entire CPU using transistors, although accomplishing this solely with transistors is nearly impossible. As a result, the decision was made to implement everything using transistors except for the RAM and stack pointer. Of course, in addition to transistors, other basic components will be utilized. RAM and the stack can be emulated with microcontrollers.
 
-In the "cpu emulation" folder, an assembler is provided along with an emulator that showcases the functionality of the processor. I created this to understand the CPU's capabilities in simulation. The emulator includes a 16x16 8-bit RGB screen. More information about using the assembler can be found below.
+In the "docs" folder, an assembler is provided along with an emulator that showcases the functionality of the processor. I created this to understand the CPU's capabilities in simulation. The emulator includes a 16x16 8-bit RGB screen. More information about using the assembler can be found below.
 
 
 
