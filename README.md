@@ -88,5 +88,5 @@ Everything else is as you would expect.
 
 ### Code example:
 
-In the "cpu emulation" folder, we can find a code example in the "codeExample.txt" file. This code draws a cube on the screen, and the cube bounces off the sides.
+In the "docs" folder, we can find a code example in the "codeExample.txt" file. This code draws a cube on the screen, and the cube bounces off the sides.
 
